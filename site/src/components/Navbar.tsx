@@ -24,16 +24,16 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#0C0704]/95 backdrop-blur-sm border-b border-[#3D1F0A]"
-          : "bg-transparent"
+          ? "bg-white/95 backdrop-blur-sm border-b border-[#C8DDD4] shadow-sm"
+          : "bg-white/90 backdrop-blur-sm border-b border-[#C8DDD4]"
       }`}
     >
       <nav className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <a
           href="#"
-          className="font-[family-name:var(--font-oswald)] text-xl font-bold tracking-widest uppercase text-[#F5EDD6] hover:text-[#F2A520] transition-colors"
+          className="font-[family-name:var(--font-oswald)] text-xl font-bold tracking-widest uppercase text-[#1A3C2E] hover:text-[#40916C] transition-colors"
         >
-          Carnívoros<span className="text-[#C84B0E]">.</span>
+          Carnívoros<span className="text-[#40916C]">.</span>
         </a>
 
         {/* Desktop links */}
@@ -42,7 +42,7 @@ export default function Navbar() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="font-[family-name:var(--font-lato)] text-sm tracking-wider uppercase text-[#C4A882] hover:text-[#F5EDD6] transition-colors"
+                className="font-[family-name:var(--font-lato)] text-sm tracking-wider uppercase text-[#4A5550] hover:text-[#1A3C2E] transition-colors"
               >
                 {link.label}
               </a>
@@ -51,7 +51,7 @@ export default function Navbar() {
           <li>
             <a
               href="#ubicacion"
-              className="font-[family-name:var(--font-lato)] text-sm px-5 py-2 bg-[#C84B0E] text-[#F5EDD6] rounded uppercase tracking-wider hover:bg-[#E05A18] transition-colors"
+              className="font-[family-name:var(--font-lato)] text-sm px-5 py-2 bg-[#1A3C2E] text-white rounded uppercase tracking-wider hover:bg-[#2D6A4F] transition-colors"
             >
               Visítanos
             </a>
@@ -62,7 +62,7 @@ export default function Navbar() {
         <button
           onClick={() => setOpen(!open)}
           aria-label={open ? "Cerrar menú" : "Abrir menú"}
-          className="md:hidden text-[#F5EDD6] p-2"
+          className="md:hidden text-[#1A3C2E] p-2"
         >
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -70,14 +70,14 @@ export default function Navbar() {
 
       {/* Mobile drawer */}
       {open && (
-        <div className="md:hidden bg-[#0C0704]/98 border-t border-[#3D1F0A] px-6 pb-6">
+        <div className="md:hidden bg-white border-t border-[#C8DDD4] px-6 pb-6">
           <ul className="flex flex-col gap-4 pt-4">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="font-[family-name:var(--font-lato)] text-base tracking-wider uppercase text-[#C4A882] hover:text-[#F5EDD6] transition-colors block py-2"
+                  className="font-[family-name:var(--font-lato)] text-base tracking-wider uppercase text-[#4A5550] hover:text-[#1A3C2E] transition-colors block py-2"
                 >
                   {link.label}
                 </a>
@@ -87,7 +87,7 @@ export default function Navbar() {
               <a
                 href="#ubicacion"
                 onClick={() => setOpen(false)}
-                className="font-[family-name:var(--font-lato)] text-sm px-5 py-3 bg-[#C84B0E] text-[#F5EDD6] rounded uppercase tracking-wider hover:bg-[#E05A18] transition-colors block text-center mt-2"
+                className="font-[family-name:var(--font-lato)] text-sm px-5 py-3 bg-[#1A3C2E] text-white rounded uppercase tracking-wider hover:bg-[#2D6A4F] transition-colors block text-center mt-2"
               >
                 Visítanos
               </a>

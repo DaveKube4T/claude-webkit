@@ -36,12 +36,7 @@ export default function Especialidades() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section
-      id="especialidades"
-      className="py-24"
-      style={{ background: "#1A0E08" }}
-      ref={ref}
-    >
+    <section id="especialidades" className="py-24 bg-white" ref={ref}>
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -49,16 +44,16 @@ export default function Especialidades() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mb-14"
         >
-          <p className="font-[family-name:var(--font-lato)] text-xs tracking-[0.2em] uppercase text-[#C84B0E] mb-3">
+          <p className="font-[family-name:var(--font-lato)] text-xs tracking-[0.2em] uppercase text-[#40916C] mb-3">
             Lo que hacemos
           </p>
           <h2
-            className="font-[family-name:var(--font-oswald)] font-bold text-[#F5EDD6] max-w-sm leading-tight"
+            className="font-[family-name:var(--font-oswald)] font-bold text-[#1A3C2E] max-w-sm leading-tight"
             style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
           >
             Sin secretos.
             <br />
-            <span className="text-[#C84B0E]">Solo buena carne.</span>
+            <span className="text-[#40916C]">Solo buena carne.</span>
           </h2>
         </motion.div>
 
@@ -75,27 +70,23 @@ export default function Especialidades() {
                   delay: i * 0.08,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="group bg-[#0C0704] border border-[#3D1F0A] rounded-xl p-6 hover:border-[#C84B0E]/50 transition-all duration-300 hover:bg-[#130A04]"
+                className="group bg-[#F2F7F4] border border-[#C8DDD4] rounded-xl p-6 hover:border-[#40916C] hover:bg-white hover:shadow-md transition-all duration-300"
               >
                 <div className="mb-5">
-                  <div className="inline-flex p-3 rounded-lg bg-[#1A0E08] border border-[#3D1F0A] group-hover:border-[#C84B0E]/30 transition-colors">
-                    <Icon
-                      size={22}
-                      className="text-[#C84B0E]"
-                      aria-hidden="true"
-                    />
+                  <div className="inline-flex p-3 rounded-lg bg-white border border-[#C8DDD4] group-hover:border-[#40916C] group-hover:bg-[#F2F7F4] transition-colors">
+                    <Icon size={22} className="text-[#40916C]" aria-hidden="true" />
                   </div>
                 </div>
 
-                <span className="font-[family-name:var(--font-lato)] text-[10px] tracking-widest uppercase text-[#F2A520] mb-2 block">
+                <span className="font-[family-name:var(--font-lato)] text-[10px] tracking-widest uppercase text-[#40916C] mb-2 block">
                   {item.tag}
                 </span>
 
-                <h3 className="font-[family-name:var(--font-oswald)] text-lg font-semibold text-[#F5EDD6] mb-3 leading-tight">
+                <h3 className="font-[family-name:var(--font-oswald)] text-lg font-semibold text-[#1A3C2E] mb-3 leading-tight">
                   {item.title}
                 </h3>
 
-                <p className="font-[family-name:var(--font-lato)] text-sm text-[#C4A882] leading-relaxed">
+                <p className="font-[family-name:var(--font-lato)] text-sm text-[#4A5550] leading-relaxed">
                   {item.desc}
                 </p>
               </motion.article>

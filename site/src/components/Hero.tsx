@@ -5,29 +5,18 @@ import { Flame, MapPin } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background gradient layers */}
-      <div className="absolute inset-0 bg-[#0C0704]" />
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-white">
+      {/* Subtle green background shapes */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
+        aria-hidden="true"
         style={{
           background:
-            "radial-gradient(ellipse at 60% 50%, rgba(200,75,14,0.18) 0%, transparent 65%), radial-gradient(ellipse at 20% 80%, rgba(242,165,32,0.10) 0%, transparent 50%)",
+            "radial-gradient(ellipse at 70% 40%, rgba(64,145,108,0.08) 0%, transparent 60%), radial-gradient(ellipse at 10% 80%, rgba(26,60,46,0.05) 0%, transparent 50%)",
         }}
       />
-      {/* Diagonal texture stripe */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `repeating-linear-gradient(
-            -45deg,
-            #F5EDD6,
-            #F5EDD6 1px,
-            transparent 1px,
-            transparent 8px
-          )`,
-        }}
-      />
+      {/* Top accent bar */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#1A3C2E] via-[#40916C] to-[#74C69D]" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20 grid md:grid-cols-2 gap-12 items-center">
         {/* Left: copy */}
@@ -38,8 +27,8 @@ export default function Hero() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="flex items-center gap-2 mb-6"
           >
-            <Flame size={16} className="text-[#C84B0E]" aria-hidden="true" />
-            <span className="font-[family-name:var(--font-lato)] text-xs tracking-[0.2em] uppercase text-[#C84B0E]">
+            <Flame size={16} className="text-[#40916C]" aria-hidden="true" />
+            <span className="font-[family-name:var(--font-lato)] text-xs tracking-[0.2em] uppercase text-[#40916C]">
               Tronadora · Tilarán · Guanacaste
             </span>
           </motion.div>
@@ -51,16 +40,16 @@ export default function Hero() {
             className="font-[family-name:var(--font-oswald)] font-bold leading-[0.95] mb-6"
             style={{ fontSize: "clamp(3rem, 7vw, 6rem)" }}
           >
-            <span className="block text-[#F5EDD6]">Carne</span>
-            <span className="block text-[#C84B0E]">en su</span>
-            <span className="block text-[#F5EDD6]">punto.</span>
+            <span className="block text-[#1A3C2E]">Carne</span>
+            <span className="block text-[#40916C]">en su</span>
+            <span className="block text-[#1A3C2E]">punto.</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="font-[family-name:var(--font-lato)] text-[#C4A882] text-lg leading-relaxed mb-8 max-w-md"
+            className="font-[family-name:var(--font-lato)] text-[#4A5550] text-lg leading-relaxed mb-8 max-w-md"
           >
             Parrilla artesanal con cortes seleccionados y la mejor cerveza
             artesanal. Al costado norte de la cancha, en Tronadora.
@@ -74,13 +63,13 @@ export default function Hero() {
           >
             <a
               href="#especialidades"
-              className="font-[family-name:var(--font-lato)] font-700 text-sm px-8 py-4 bg-[#C84B0E] text-[#F5EDD6] rounded uppercase tracking-wider hover:bg-[#E05A18] transition-all duration-200 hover:shadow-[0_0_20px_rgba(200,75,14,0.4)]"
+              className="font-[family-name:var(--font-lato)] font-bold text-sm px-8 py-4 bg-[#1A3C2E] text-white rounded uppercase tracking-wider hover:bg-[#2D6A4F] transition-all duration-200 hover:shadow-lg"
             >
               Ver Especialidades
             </a>
             <a
               href="#ubicacion"
-              className="font-[family-name:var(--font-lato)] text-sm px-8 py-4 border border-[#3D1F0A] text-[#C4A882] rounded uppercase tracking-wider hover:border-[#C84B0E] hover:text-[#F5EDD6] transition-all duration-200 flex items-center gap-2"
+              className="font-[family-name:var(--font-lato)] text-sm px-8 py-4 border-2 border-[#C8DDD4] text-[#1A3C2E] rounded uppercase tracking-wider hover:border-[#40916C] hover:bg-[#F2F7F4] transition-all duration-200 flex items-center gap-2"
             >
               <MapPin size={14} aria-hidden="true" />
               Cómo llegar
@@ -88,7 +77,7 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Right: decorative fire panel */}
+        {/* Right: decorative panel */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -102,45 +91,28 @@ export default function Hero() {
               className="absolute inset-0 rounded-full"
               style={{
                 background:
-                  "radial-gradient(circle, rgba(200,75,14,0.25) 0%, rgba(242,165,32,0.08) 50%, transparent 70%)",
+                  "radial-gradient(circle, rgba(64,145,108,0.15) 0%, rgba(26,60,46,0.05) 50%, transparent 70%)",
                 filter: "blur(20px)",
               }}
             />
-            {/* Center flame icon cluster */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative">
-                <Flame
-                  size={100}
-                  className="text-[#C84B0E]"
-                  strokeWidth={1}
-                />
-                <Flame
-                  size={60}
-                  className="text-[#F2A520] absolute top-4 left-5"
-                  strokeWidth={1}
-                />
+            {/* Center circle */}
+            <div className="absolute inset-8 rounded-full bg-[#F2F7F4] border-2 border-[#C8DDD4] flex items-center justify-center">
+              <div className="text-center">
+                <Flame size={48} className="text-[#40916C] mx-auto mb-2" strokeWidth={1.5} />
+                <p className="font-[family-name:var(--font-oswald)] text-sm text-[#1A3C2E] tracking-widest uppercase">
+                  Grill House
+                </p>
               </div>
             </div>
             {/* Floating badge */}
-            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#1A0E08] border border-[#3D1F0A] rounded-full px-6 py-2 whitespace-nowrap">
-              <span className="font-[family-name:var(--font-oswald)] text-sm text-[#F2A520] tracking-widest uppercase">
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#1A3C2E] rounded-full px-6 py-2 whitespace-nowrap shadow-md">
+              <span className="font-[family-name:var(--font-oswald)] text-sm text-white tracking-widest uppercase">
                 #1 en Tronadora
               </span>
             </div>
           </div>
         </motion.div>
       </div>
-
-      {/* Bottom scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        aria-hidden="true"
-      >
-        <div className="w-px h-10 bg-gradient-to-b from-transparent to-[#3D1F0A]" />
-      </motion.div>
     </section>
   );
 }
