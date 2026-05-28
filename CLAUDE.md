@@ -275,7 +275,20 @@ cd site && npx vercel --yes
 
 See `docs/deployment-guide.md` for troubleshooting.
 
-## After Phase 6
+### Phase 7: Custom Domain & Corporate Email (Optional)
+If the user wants a professional custom domain and corporate email (crucial for B2B automation and avoiding spam):
+1. **Domain Selection:** Recommend Namecheap for `.co`, `.tech`, or `.ai` domains.
+2. **Corporate Email:** Recommend Zoho Mail Lite ($1/mo) because the free tier disables SMTP/IMAP (which are mandatory for n8n and HubSpot).
+3. **Vercel DNS setup in Namecheap (Advanced DNS):**
+   - **Type:** A Record | **Host:** `@` | **Value:** `76.76.21.21`
+   - **Type:** CNAME Record | **Host:** `www` | **Value:** `cname.vercel-dns.com`
+4. **Zoho Mail DNS setup in Namecheap (Advanced DNS):**
+   - **TXT Verification:** **Type:** TXT Record | **Host:** `@` | **Value:** (Zoho Verification Code)
+   - **MX Records (Mail Settings -> Custom MX):** **Host:** `@` | **Value:** `mx.zoho.com` (Priority 10), `mx2.zoho.com` (20), `mx3.zoho.com` (50)
+   - **SPF:** **Type:** TXT Record | **Host:** `@` | **Value:** `v=spf1 include:zoho.com ~all`
+   - **DKIM:** **Type:** TXT Record | **Host:** `zoho._domainkey` | **Value:** (Zoho DKIM Key)
+
+## After Phase 7
 
 **If the user declines deployment:**
 Tell them: "No problem! Your page is ready at `site/`. Run `cd site && npm run dev` to see it locally anytime. You can deploy later whenever you want."
