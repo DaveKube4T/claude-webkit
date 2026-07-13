@@ -6,7 +6,9 @@ import { useEffect, useRef, useState } from "react"
 function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true, margin: "-40px" })
-  const [value, setValue] = useState(0)
+  // Inicia en target: el HTML SSR muestra el valor final (Google indexa 247/68%,
+  // no ceros). La animación 0→target corre solo client-side al entrar en viewport.
+  const [value, setValue] = useState(target)
 
   useEffect(() => {
     if (!inView) return
