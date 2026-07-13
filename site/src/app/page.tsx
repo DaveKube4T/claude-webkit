@@ -287,8 +287,14 @@ export default function Home() {
                   <Logo size="md" />
                 </a>
                 <p className="text-xs text-[#64748B] leading-relaxed mt-2">
-                  Automatización, IA y experiencias digitales para empresas que quieren crecer con mejores sistemas. Cali, Colombia.
+                  Automatización, IA y experiencias digitales para empresas que quieren crecer con mejores sistemas.
                 </p>
+                <address className="not-italic text-xs text-[#94A3B8] leading-relaxed flex flex-col gap-1">
+                  <span>Cali, Valle del Cauca, Colombia</span>
+                  <a href="tel:+573052278441" className="w-fit hover:text-[#FFB347] transition-colors">
+                    +57 305 227 8441
+                  </a>
+                </address>
               </div>
 
               <nav aria-label="Footer navegación" className="flex flex-wrap gap-12">
