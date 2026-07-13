@@ -16,10 +16,9 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.optima-tech.co'),
-  title: "Optima Technology — Automatiza hoy. Escala mañana.",
+  title: "Optima Technology | Automatización con IA para Pymes en Colombia",
   description:
     "Automatizamos procesos de tu negocio con IA. Flujos, chatbots conversacionales, webs de alto impacto y marketing automatizado para pymes.",
-  keywords: ["automatización", "inteligencia artificial", "chatbots", "pymes", "n8n", "Colombia"],
   alternates: {
     canonical: '/',
   },
@@ -27,16 +26,9 @@ export const metadata: Metadata = {
     title: "Optima Technology — Automatiza hoy. Escala mañana.",
     description:
       "Automatizamos procesos de tu negocio con IA. Flujos, chatbots conversacionales, webs de alto impacto y marketing automatizado para pymes.",
+    url: '/',
     type: "website",
     locale: "es_CO",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Optima Technology",
-      },
-    ],
   },
 }
 
