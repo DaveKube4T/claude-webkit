@@ -1,5 +1,4 @@
-# Built landing page
-site/
+# Build artifacts
 build/
 
 # Dependencies
@@ -37,3 +36,4 @@ yarn-error.log*
 playwright-cli-screenshots/
 *.png
 !docs/**/*.png
+!site/public/**/*.png

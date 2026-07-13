@@ -1,0 +1,220 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #0B1220;
+  --color-foreground: #F1F5F9;
+  --color-primary: #FF9800;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #334155;
+  --color-secondary-foreground: #F1F5F9;
+  --color-muted: #334155;
+  --color-muted-foreground: #94A3B8;
+  --color-accent: #1E8BFF;
+  --color-accent-foreground: #FFFFFF;
+  --color-card: #152033;
+  --color-card-foreground: #F1F5F9;
+  --color-border: #334155;
+  --color-input: #334155;
+  --color-ring: #FF9800;
+  --color-destructive: #EF4444;
+  --color-destructive-foreground: #FFFFFF;
+  --color-popover: #152033;
+  --color-popover-foreground: #F1F5F9;
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space-grotesk);
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: #0B1220;
+  color: #F1F5F9;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+/* ── Gradiente azul → naranja compartido ── */
+.grad-text {
+  background: linear-gradient(100deg, #1E8BFF 0%, #FFB347 55%, #FF9800 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 5s ease-in-out infinite;
+}
+
+.grad-bg {
+  background: linear-gradient(135deg, #1E8BFF 0%, #FF9800 100%);
+}
+
+/* ── Botón gradiente (navy → blue → orange estilo socio) ── */
+.btn-grad {
+  background: linear-gradient(135deg, #0B1220 0%, #17365F 42%, #FF9800 100%);
+  transition: filter 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 4px 14px rgba(11, 18, 32, 0.35), 0 6px 18px rgba(255, 152, 0, 0.18);
+}
+.btn-grad:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 0 22px rgba(23, 54, 95, 0.38), 0 0 40px rgba(255, 152, 0, 0.28);
+  transform: translateY(-1px);
+}
+
+.btn-outline-grad {
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.btn-outline-grad:hover {
+  background-color: rgba(30, 139, 255, 0.08);
+  border-color: rgba(30, 139, 255, 0.4);
+}
+
+/* ── Light effect en TODAS las cards ── */
+.card-glow {
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.card-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), rgba(30, 139, 255, 0.22), rgba(255, 152, 0, 0.12), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.card-glow:hover::before { opacity: 1; }
+.card-glow:hover {
+  border-color: rgba(30, 139, 255, 0.45) !important;
+  transform: translateY(-4px);
+  box-shadow: 0 0 30px rgba(30, 139, 255, 0.15), 0 0 50px rgba(255, 152, 0, 0.10);
+}
+
+/* Icon 3D container */
+.icon-3d {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, rgba(30, 139, 255, 0.18), rgba(255, 152, 0, 0.12));
+  border: 1px solid rgba(30, 139, 255, 0.25);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 28px rgba(30, 139, 255, 0.15);
+  position: relative;
+  z-index: 10;
+}
+
+/* Tags tech */
+.tag-tech {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94A3B8;
+  background: rgba(11, 18, 32, 0.8);
+  border: 1px solid #334155;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Tipografía estilo socio */
+.hero-title { font-size: clamp(44px, 7vw, 88px); line-height: 1.05; letter-spacing: -0.03em; }
+.section-title { font-size: clamp(32px, 4.2vw, 52px); line-height: 1.08; letter-spacing: -0.025em; }
+.cta-title { font-size: clamp(36px, 5vw, 64px); line-height: 1.05; letter-spacing: -0.03em; }
+
+/* Progress bar dashboard */
+.progress-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #1E8BFF, #FF9800);
+  border-radius: 3px;
+  transform-origin: left;
+  animation: scaleX 1.4s cubic-bezier(0.21, 0.47, 0.32, 0.98) 0.6s both;
+}
+
+/* Marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 42s linear infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+@keyframes scaleX {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+.pulse-dot {
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseOrb {
+  0%, 100% { opacity: 0.06; transform: scale(1); }
+  50% { opacity: 0.10; transform: scale(1.08); }
+}
+.orb { animation: pulseOrb 6s ease-in-out infinite; }
+.orb-2 { animation: pulseOrb 6s ease-in-out 2s infinite; }
+
+@keyframes flowPulse {
+  0%, 100% { border-color: rgba(255, 255, 255, 0.09); transform: translateX(0); }
+  50% { border-color: rgba(255, 152, 0, 0.4); transform: translateX(4px); }
+}
+.flow-item { animation: flowPulse 3.6s ease-in-out infinite; }
+.flow-item:nth-child(2) { animation-delay: 1.2s; }
+.flow-item:nth-child(3) { animation-delay: 2.4s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.wa-float {
+  animation: float 2.8s ease-in-out infinite;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.wa-float:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 35px rgba(255, 152, 0, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .marquee-track, .pulse-dot, .orb, .orb-2, .flow-item, .wa-float, .grad-text {
+    animation: none !important;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0B1220; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
