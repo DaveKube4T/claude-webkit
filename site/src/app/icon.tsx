@@ -6,11 +6,12 @@ export const size = { width: 64, height: 64 }
 export const contentType = "image/png"
 
 export default function Icon() {
-  // icon-mark-v2.jpeg ya trae su propio fondo/anillo de marca (1080x1080) — se
-  // renderiza a sangre completa, sin caja/padding extra.
-  const iconPath = path.join(process.cwd(), "public", "icon-mark-v2.jpeg")
+  // Recorte propio para favicon: icon-mark-v2.jpeg con su encuadre completo
+  // se ve como un punto diminuto a 16px (tamaño real de pestaña). Este PNG
+  // recorta más cerca de las flechas para que siga siendo legible ahí.
+  const iconPath = path.join(process.cwd(), "public", "icon-mark-v2-favicon.png")
   const iconData = fs.readFileSync(iconPath)
-  const iconBase64 = `data:image/jpeg;base64,${iconData.toString("base64")}`
+  const iconBase64 = `data:image/png;base64,${iconData.toString("base64")}`
 
   return new ImageResponse(
     (
