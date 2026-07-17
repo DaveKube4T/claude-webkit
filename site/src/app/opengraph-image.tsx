@@ -10,9 +10,9 @@ export const size = {
 export const contentType = 'image/png'
 
 export default async function Image() {
-  // logo.png es 332x111 px (aspect 3:1)
-  const logo = await readFile(join(process.cwd(), 'public/logo.png'))
-  const logoSrc = `data:image/png;base64,${logo.toString('base64')}`
+  // icon-mark-v2.jpeg es 1080x1080 px (cuadrado), incluye su propio fondo/anillo
+  const logo = await readFile(join(process.cwd(), 'public/icon-mark-v2.jpeg'))
+  const logoSrc = `data:image/jpeg;base64,${logo.toString('base64')}`
 
   return new ImageResponse(
     (
@@ -29,7 +29,7 @@ export default async function Image() {
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={logoSrc} width={332} height={111} alt="" />
+        <img src={logoSrc} width={140} height={140} alt="" />
         <div
           style={{
             marginTop: 56,
