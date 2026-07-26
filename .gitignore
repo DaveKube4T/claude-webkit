@@ -37,3 +37,6 @@ playwright-cli-screenshots/
 *.png
 !docs/**/*.png
 !site/public/**/*.png
+
+# Brainstorming / previews locales
+.superpowers/
