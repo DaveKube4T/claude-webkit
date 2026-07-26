@@ -120,3 +120,40 @@ export function SolutionsMenu() {
     </div>
   )
 }
+
+export function SolutionsMenuMobile({ setMenuOpen }: { setMenuOpen: (open: boolean) => void }) {
+  const [expanded, setExpanded] = useState(false)
+
+  return (
+    <div>
+      <button
+        type="button"
+        aria-haspopup="true"
+        aria-expanded={expanded}
+        aria-controls="solutions-panel-mobile"
+        onClick={() => setExpanded((prev) => !prev)}
+        className="flex items-center justify-between w-full text-sm font-medium text-[#94A3B8] hover:text-[#FFB347] transition-colors py-1"
+      >
+        Soluciones IA
+        <ChevronDown
+          size={16}
+          className={cn("transition-transform duration-200", expanded && "rotate-180")}
+          aria-hidden="true"
+        />
+      </button>
+
+      <div
+        id="solutions-panel-mobile"
+        aria-hidden={!expanded}
+        className={cn(
+          "overflow-hidden transition-all duration-200 ease-out pl-4",
+          expanded ? "max-h-96 opacity-100 mt-2" : "max-h-0 opacity-0"
+        )}
+      >
+        {solutions.map((solution) =>
+          renderSolutionCard(solution, expanded, () => setMenuOpen(false))
+        )}
+      </div>
+    </div>
+  )
+}
