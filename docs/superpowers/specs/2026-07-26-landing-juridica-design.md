@@ -260,7 +260,7 @@ Implicación: si ese servidor se cae, cambia de dominio o el socio cierra la cue
 
 ## Deploy y rollback
 
-- Branch nuevo desde `main`, commits atómicos, verificación completa antes de desplegar.
+- Branch `landing-juridica`, salida de `update-brand-icon` (la rama de producción). **`main` no sirve como base:** es el template de Claude Web Builder y su `.gitignore` ignora `site/`, así que no contiene el sitio. Commits atómicos, verificación completa antes de desplegar.
 - Deploy: `npx vercel --prod` desde `site/`, **con aprobación explícita de Deybis** tras pasar el gate de verificación.
 - Rollback: Instant Rollback en el dashboard de Vercel al deployment anterior. No hay migraciones ni cambios destructivos; la página principal no se toca, así que un rollback no arrastra otros cambios.
 
