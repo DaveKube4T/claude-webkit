@@ -254,19 +254,22 @@ export function SolutionsMenuMobile({ setMenuOpen }: { setMenuOpen: (open: boole
 
       <div
         id="solutions-panel-mobile"
+        aria-hidden={!expanded}
         className={cn(
           "overflow-hidden transition-all duration-200 ease-out pl-4",
           expanded ? "max-h-96 opacity-100 mt-2" : "max-h-0 opacity-0"
         )}
       >
         {solutions.map((solution) =>
-          renderSolutionCard(solution, () => setMenuOpen(false))
+          renderSolutionCard(solution, expanded, () => setMenuOpen(false))
         )}
       </div>
     </div>
   )
 }
 ```
+
+**Nota de actualización post-Task-2:** el code review de la Task 2 encontró que el contenido del panel desktop seguía siendo focuseable por teclado aunque estuviera visualmente oculto (link invisible alcanzable con Tab). El fix cambió la firma de `renderSolutionCard` a `(solution: Solution, open: boolean, onNavigate?: () => void)`, agregando `tabIndex={open ? 0 : -1}` en el `<a>` y `aria-hidden={!open}` en el panel — ya reflejado en el bloque de arriba (`renderSolutionCard(solution, expanded, ...)` y `aria-hidden={!expanded}` en `#solutions-panel-mobile`). El acordeón mobile tiene el mismo problema en potencia (`max-h-0 overflow-hidden` no impide el foco por teclado en la mayoría de navegadores), así que aplica la misma solución desde el inicio, usando su propio estado `expanded` en vez de `open`.
 
 Nota: `renderSolutionCard` y `ChevronDown`/`cn`/`useState` ya están importados arriba en el mismo archivo (Task 2) — no dupliques imports.
 
