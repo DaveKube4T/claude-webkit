@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Menu, X } from "lucide-react"
 import Logo from "@/components/Logo"
+import { SolutionsMenu, SolutionsMenuMobile } from "@/components/SolutionsMenu"
 
 const links = [
   { label: "Servicios", href: "#servicios" },
@@ -23,7 +24,17 @@ export default function Navbar() {
         </a>
 
         <nav className="hidden md:flex items-center gap-8" aria-label="Navegación principal">
-          {links.map((l) => (
+          {links.slice(0, 1).map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="text-sm font-medium text-[#94A3B8] hover:text-[#FFB347] transition-colors duration-200"
+            >
+              {l.label}
+            </a>
+          ))}
+          <SolutionsMenu />
+          {links.slice(1).map((l) => (
             <a
               key={l.href}
               href={l.href}
@@ -52,7 +63,18 @@ export default function Navbar() {
 
       {open && (
         <div className="md:hidden border-t border-[#334155]/60 bg-[#0B1220] px-6 py-4 flex flex-col gap-4">
-          {links.map((l) => (
+          {links.slice(0, 1).map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="text-sm font-medium text-[#94A3B8] hover:text-[#FFB347] transition-colors py-1"
+              onClick={() => setOpen(false)}
+            >
+              {l.label}
+            </a>
+          ))}
+          <SolutionsMenuMobile setMenuOpen={setOpen} />
+          {links.slice(1).map((l) => (
             <a
               key={l.href}
               href={l.href}
