@@ -94,7 +94,7 @@ export function SolutionsMenu() {
         aria-expanded={open}
         aria-controls="solutions-panel"
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-1 text-sm font-medium text-[#94A3B8] hover:text-[#FFB347] transition-colors duration-200"
+        className="flex items-center gap-1 rounded text-sm font-medium text-[#94A3B8] hover:text-[#FFB347] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFB347]"
       >
         Soluciones IA
         <ChevronDown
@@ -132,7 +132,7 @@ export function SolutionsMenuMobile({ setMenuOpen }: { setMenuOpen: (open: boole
         aria-expanded={expanded}
         aria-controls="solutions-panel-mobile"
         onClick={() => setExpanded((prev) => !prev)}
-        className="flex items-center justify-between w-full text-sm font-medium text-[#94A3B8] hover:text-[#FFB347] transition-colors py-1"
+        className="flex items-center justify-between w-full rounded text-sm font-medium text-[#94A3B8] hover:text-[#FFB347] transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFB347]"
       >
         Soluciones IA
         <ChevronDown
