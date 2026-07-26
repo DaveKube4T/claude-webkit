@@ -7,11 +7,12 @@ import { solutions, type Solution } from "@/data/solutions"
 
 const CLOSE_DELAY_MS = 150
 
-function renderSolutionCard(solution: Solution, onNavigate?: () => void) {
+function renderSolutionCard(solution: Solution, open: boolean, onNavigate?: () => void) {
   return (
     <a
       key={solution.href}
       href={solution.href}
+      tabIndex={open ? 0 : -1}
       onClick={onNavigate}
       className={cn(
         "block rounded-lg p-3 transition-all duration-200",
@@ -52,8 +53,11 @@ export function SolutionsMenu() {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        const hadFocusInside = containerRef.current?.contains(document.activeElement)
         setOpen(false)
-        triggerRef.current?.focus()
+        if (hadFocusInside) {
+          triggerRef.current?.focus()
+        }
       }
     }
 
@@ -102,6 +106,7 @@ export function SolutionsMenu() {
 
       <div
         id="solutions-panel"
+        aria-hidden={!open}
         className={cn(
           "absolute left-0 top-full mt-2 w-72 rounded-xl border border-[#334155]/60 bg-[#111A2C] p-3 shadow-xl",
           "transition-all duration-200 ease-out",
@@ -110,7 +115,7 @@ export function SolutionsMenu() {
             : "opacity-0 -translate-y-2 pointer-events-none"
         )}
       >
-        {solutions.map((solution) => renderSolutionCard(solution))}
+        {solutions.map((solution) => renderSolutionCard(solution, open))}
       </div>
     </div>
   )
