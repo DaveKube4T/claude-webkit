@@ -1571,6 +1571,22 @@
       scroll-margin-top: 110px;
     }
 
+    .form-status {
+      min-height: 20px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .form-status.success {
+      color: #9beabc;
+    }
+
+    .form-status.error {
+      color: #ff9b87;
+    }
+
     .service-stage::before {
       content: "";
       position: absolute;
@@ -7136,7 +7152,7 @@
           </div>
         </div>
 
-        <form class="reveal" id="formulario-contacto" action="mailto:info@optima-tech.co" method="post" enctype="text/plain">
+        <form class="reveal" id="formulario-contacto">
           <div class="form-grid">
             <div class="field">
               <label for="name">Nombre completo*</label>
@@ -7185,6 +7201,7 @@
             <span class="privacy">Sus datos están protegidos. No compartimos su información.</span>
             <button class="btn btn-primary" type="submit">Enviar solicitud <span aria-hidden="true">→</span></button>
           </div>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
         </form>
       </div>
     </section>
@@ -9860,6 +9877,59 @@ Te haré una pregunta a la vez para organizar la propuesta.
         });
       }, { passive: true });
     }
+
+    const legalContactForm = document.getElementById("formulario-contacto");
+    const legalFormStatus = document.getElementById("formStatus");
+    const legalFormSubmit = legalContactForm.querySelector('button[type="submit"]');
+
+    // Los <select> arrancan en un placeholder que no debe viajar al CRM.
+    const readSelectValue = (element) => {
+      const value = element.value.trim();
+      return value === "Seleccione una opción" ? "" : value;
+    };
+
+    legalContactForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!legalContactForm.reportValidity()) return;
+
+      const firmSize = readSelectValue(document.getElementById("size"));
+      const freeMessage = document.getElementById("message").value.trim();
+
+      const payload = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        company: document.getElementById("firm").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        service: readSelectValue(document.getElementById("interest")),
+        message: [firmSize ? `Tamaño de firma: ${firmSize}` : "", freeMessage]
+          .filter(Boolean)
+          .join("\n\n")
+      };
+
+      legalFormSubmit.disabled = true;
+      legalFormStatus.className = "form-status";
+      legalFormStatus.textContent = "Enviando solicitud...";
+
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error(`La API respondió con estado ${response.status}`);
+
+        legalFormStatus.className = "form-status success";
+        legalFormStatus.textContent = "Solicitud enviada. Le contactaremos muy pronto.";
+        legalContactForm.reset();
+      } catch (error) {
+        console.error("No fue posible enviar la solicitud:", error);
+        legalFormStatus.className = "form-status error";
+        legalFormStatus.textContent = "No pudimos enviar la solicitud. Escríbanos por WhatsApp o inténtelo nuevamente.";
+      } finally {
+        legalFormSubmit.disabled = false;
+      }
+    });
   </script>
 </body>
 </html>
