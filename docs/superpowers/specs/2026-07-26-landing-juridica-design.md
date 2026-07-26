@@ -1,4 +1,4 @@
-# Spec: Landing de abogados en optima-tech.co/abogados
+# Spec: Landing jurídica en optima-tech.co/juridico
 
 **Fecha:** 2026-07-26
 **Origen:** Landing construida por el socio de Deybis (Julián Coello) como HTML standalone. Se integra al sitio de producción y se conecta su formulario a HubSpot.
@@ -7,35 +7,35 @@
 
 ## Decisiones tomadas
 
-- **Integración:** HTML estático servido desde `site/public/abogados/`, sin portar a React. El archivo conserva su propio nav, footer, CSS y JS — es una página hermana del sitio principal, no comparte layout.
-- **URL:** subpath `optima-tech.co/abogados` (no subdominio), para aprovechar la autoridad del dominio ya posicionado.
-- **Videos:** los 2 archivos (~21 MB combinados) se commitean en `site/public/abogados/`, junto al HTML. Sin CDN externo.
+- **Integración:** HTML estático servido desde `site/public/juridico/`, sin portar a React. El archivo conserva su propio nav, footer, CSS y JS — es una página hermana del sitio principal, no comparte layout.
+- **URL:** subpath `optima-tech.co/juridico` (no subdominio), para aprovechar la autoridad del dominio ya posicionado.
+- **Videos:** los 2 archivos (~21 MB combinados) se commitean en `site/public/juridico/`, junto al HTML. Sin CDN externo.
 - **Formulario:** se conecta a HubSpot reutilizando la API route existente `site/src/app/api/contact/route.ts` (misma `HUBSPOT_API_KEY` que ya usa la página principal). No se crea backend nuevo.
 
 ## Archivos y responsabilidades
 
 | Archivo | Acción | Responsabilidad |
 |---|---|---|
-| `site/public/abogados/index.html` | Crear (copia de `landing-abogados.html`) | La landing completa: markup, estilos, demos, formulario |
-| `site/public/abogados/0725 (3).mp4` | Crear | Video de fondo de la sección "Centro de Operaciones IA" |
-| `site/public/abogados/hf_20260725_054542_e8f4fd77-94c9-46f0-849e-6a6b1b5b8810.mp4` | Crear | Video de fondo del panel CTA |
-| `site/src/app/sitemap.ts` | Modificar | Añadir la entrada `/abogados` |
+| `site/public/juridico/index.html` | Crear (copia de `landing-abogados.html`) | La landing completa: markup, estilos, demos, formulario |
+| `site/public/juridico/0725 (3).mp4` | Crear | Video de fondo de la sección "Centro de Operaciones IA" |
+| `site/public/juridico/hf_20260725_054542_e8f4fd77-94c9-46f0-849e-6a6b1b5b8810.mp4` | Crear | Video de fondo del panel CTA |
+| `site/src/app/sitemap.ts` | Modificar | Añadir la entrada `/juridico` |
 | `.gitignore` (raíz) | Modificar | Ignorar `.superpowers/` (contiene copias de trabajo de 21 MB) |
-| `landing-abogados.html` (raíz) | Eliminar | Copia de trabajo; la versión canónica queda en `site/public/abogados/index.html` |
+| `landing-abogados.html` (raíz) | Eliminar | Copia de trabajo; la versión canónica queda en `site/public/juridico/index.html` |
 
 **Nota sobre nombres de archivo:** los dos `.mp4` deben conservar su nombre exacto —incluidos el espacio y los paréntesis de `0725 (3).mp4`— porque el HTML los referencia por ruta relativa en `<source data-src="...">`. Renombrarlos rompe los videos.
 
 ## 1. Copia de los archivos estáticos
 
-Copiar el HTML y los dos videos a `site/public/abogados/`. El HTML referencia los videos por ruta relativa, así que al quedar en la misma carpeta resuelven sin cambios en el código.
+Copiar el HTML y los dos videos a `site/public/juridico/`. El HTML referencia los videos por ruta relativa, así que al quedar en la misma carpeta resuelven sin cambios en el código.
 
-## 2. Resolución de la URL `/abogados`
+## 2. Resolución de la URL `/juridico`
 
-Los docs de Next.js 16 (`node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/public-folder.md`) confirman que `public/x/y.ext` se sirve en `/x/y.ext`, pero **no documentan** si `public/abogados/index.html` resuelve también en `/abogados` (comportamiento de índice de directorio).
+Los docs de Next.js 16 (`node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/public-folder.md`) confirman que `public/x/y.ext` se sirve en `/x/y.ext`, pero **no documentan** si `public/juridico/index.html` resuelve también en `/juridico` (comportamiento de índice de directorio).
 
 **La implementación debe verificarlo empíricamente**, no asumirlo:
 
-1. Con `npm run build && npx next start`, hacer `curl -s -o /dev/null -w "%{http_code}" http://localhost:PORT/abogados`.
+1. Con `npm run build && npx next start`, hacer `curl -s -o /dev/null -w "%{http_code}" http://localhost:PORT/juridico`.
 2. Si devuelve **200**, no se requiere nada más.
 3. Si devuelve **404**, añadir el rewrite explícito en `site/next.config.ts`:
 
@@ -45,7 +45,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async rewrites() {
     return [
-      { source: "/abogados", destination: "/abogados/index.html" },
+      { source: "/juridico", destination: "/juridico/index.html" },
     ];
   },
 };
@@ -53,7 +53,7 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 ```
 
-Ambas rutas (`/abogados` y `/abogados/`) deben terminar devolviendo 200 con el HTML de la landing.
+Ambas rutas (`/juridico` y `/juridico/`) deben terminar devolviendo 200 con el HTML de la landing.
 
 ## 3. Formulario → HubSpot
 
@@ -185,7 +185,7 @@ Necesitamos organizar la atención de nuevos clientes.
 
 `ContactForm.tsx` **silencia los errores del CRM** y siempre muestra "¡Mensaje enviado!" (comentario en el código: *"no bloqueamos al usuario por error de CRM"*). Si HubSpot falla, ese lead se pierde sin que nadie se entere.
 
-El formulario de `/abogados` hace lo contrario: si el envío falla, lo dice y ofrece WhatsApp como salida. Es una decisión consciente, no una inconsistencia por descuido — en una landing de prospección es preferible perder la ilusión de éxito que perder el lead en silencio. Unificar el comportamiento del formulario de la home queda como backlog.
+El formulario de `/juridico` hace lo contrario: si el envío falla, lo dice y ofrece WhatsApp como salida. Es una decisión consciente, no una inconsistencia por descuido — en una landing de prospección es preferible perder la ilusión de éxito que perder el lead en silencio. Unificar el comportamiento del formulario de la home queda como backlog.
 
 ## 4. SEO
 
@@ -194,7 +194,7 @@ La landing es HTML plano: **no pasa por el Metadata API de Next.js**, así que s
 ### Canonical
 Añadir en el `<head>`:
 ```html
-<link rel="canonical" href="https://www.optima-tech.co/abogados" />
+<link rel="canonical" href="https://www.optima-tech.co/juridico" />
 ```
 
 ### Open Graph
@@ -203,7 +203,7 @@ La landing hoy no tiene ninguna etiqueta OG. Como WhatsApp es el canal principal
 ```html
 <meta property="og:title" content="Empleado Digital para Abogados en Colombia | Optima Technology" />
 <meta property="og:description" content="Empleados digitales para abogados y firmas jurídicas en Colombia: WhatsApp inteligente, cotizaciones, administración inteligente, monitoreo judicial y documentos automáticos." />
-<meta property="og:url" content="https://www.optima-tech.co/abogados" />
+<meta property="og:url" content="https://www.optima-tech.co/juridico" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="es_CO" />
 <meta property="og:image" content="https://www.optima-tech.co/opengraph-image" />
@@ -217,7 +217,7 @@ Añadir la entrada en `site/src/app/sitemap.ts`, entre la raíz y `/privacy-poli
 
 ```ts
     {
-      url: 'https://www.optima-tech.co/abogados',
+      url: 'https://www.optima-tech.co/juridico',
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
@@ -235,17 +235,17 @@ Añadir al `.gitignore` de la raíz:
 
 `.superpowers/` contiene la sesión del companion visual y una carpeta de preview con copias de los dos videos (~21 MB). Sin esta regla se corre el riesgo de commitear los videos por duplicado.
 
-Eliminar además la copia de trabajo `landing-abogados.html` de la raíz del repo una vez copiada a `site/public/abogados/index.html`.
+Eliminar además la copia de trabajo `landing-abogados.html` de la raíz del repo una vez copiada a `site/public/juridico/index.html`.
 
 ## Verificación (gate antes de deploy)
 
 1. `npm run build` en `site/` sin errores.
 2. Con `npx next start`, comprobar:
-   - `curl -o /dev/null -w "%{http_code}" /abogados` → **200** (si es 404, aplicar el rewrite de la sección 2 y repetir).
-   - `curl -o /dev/null -w "%{http_code}" "/abogados/0725%20(3).mp4"` → **200**, `content-type: video/mp4`.
-   - `curl -o /dev/null -w "%{http_code}" "/abogados/hf_20260725_054542_e8f4fd77-94c9-46f0-849e-6a6b1b5b8810.mp4"` → **200**.
-   - El HTML servido contiene `rel="canonical"` y `og:url` apuntando a `/abogados`.
-   - `/sitemap.xml` incluye la URL `/abogados`.
+   - `curl -o /dev/null -w "%{http_code}" /juridico` → **200** (si es 404, aplicar el rewrite de la sección 2 y repetir).
+   - `curl -o /dev/null -w "%{http_code}" "/juridico/0725%20(3).mp4"` → **200**, `content-type: video/mp4`.
+   - `curl -o /dev/null -w "%{http_code}" "/juridico/hf_20260725_054542_e8f4fd77-94c9-46f0-849e-6a6b1b5b8810.mp4"` → **200**.
+   - El HTML servido contiene `rel="canonical"` y `og:url` apuntando a `/juridico`.
+   - `/sitemap.xml` incluye la URL `/juridico`.
 3. **Prueba real del formulario end-to-end:** enviar el formulario desde el navegador con datos de prueba reconocibles (ej. nombre "Prueba Landing Abogados") y **confirmar en el CRM de HubSpot que el contacto aparece** con firma, teléfono, interés y tamaño de firma dentro del campo mensaje. Verificar también que el mensaje de éxito se muestra en pantalla y el formulario se limpia.
 4. Verificación visual: la página carga con ambos videos reproduciéndose, y las 5 demos abren su modal correspondiente.
 5. Que la página principal (`/`) siga intacta: `curl /` responde 200 y su `<title>` no cambió.
@@ -268,6 +268,6 @@ Implicación: si ese servidor se cae, cambia de dominio o el socio cierra la cue
 
 - Migrar los workflows n8n de las demos a infraestructura propia.
 - og:image específica del vertical legal (hoy usa la genérica de marca).
-- JSON-LD propio para `/abogados` (la página no hereda el `ProfessionalService` del layout principal por ser HTML estático).
-- Enlace desde la home hacia `/abogados` (hoy la landing queda accesible solo por URL directa y sitemap).
-- Unificar el manejo de errores del formulario de la home con el de `/abogados` (hoy la home oculta los fallos del CRM).
+- JSON-LD propio para `/juridico` (la página no hereda el `ProfessionalService` del layout principal por ser HTML estático).
+- Enlace desde la home hacia `/juridico` (hoy la landing queda accesible solo por URL directa y sitemap).
+- Unificar el manejo de errores del formulario de la home con el de `/juridico` (hoy la home oculta los fallos del CRM).
