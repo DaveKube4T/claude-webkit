@@ -5,6 +5,9 @@ import { Menu, X } from "lucide-react"
 import Logo from "@/components/Logo"
 import { SolutionsMenu, SolutionsMenuMobile } from "@/components/SolutionsMenu"
 
+// index 0 (Servicios) se renderiza aparte de los demás vía links.slice(0, 1) /
+// links.slice(1) en los dos bloques de abajo, para insertar <SolutionsMenu />
+// justo después. Si reordenas este array, actualiza ambos slice() también.
 const links = [
   { label: "Servicios", href: "#servicios" },
   { label: "Proceso", href: "#proceso" },
