@@ -11,6 +11,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: 'https://www.optima-tech.co/juridico',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
       url: 'https://www.optima-tech.co/privacy-policy',
       lastModified: new Date(),
       changeFrequency: 'yearly',
