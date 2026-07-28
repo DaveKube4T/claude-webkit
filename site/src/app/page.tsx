@@ -6,6 +6,7 @@ import Dashboard from "@/components/Dashboard"
 import MethodOptima from "@/components/MethodOptima"
 import ServicesSection from "@/components/ServicesSection"
 import AutomationBanner from "@/components/AutomationBanner"
+import HeroVideo from "@/components/HeroVideo"
 import WhatsAppFloat from "@/components/WhatsAppFloat"
 import CardGlowHandler from "@/components/CardGlow"
 import Logo from "@/components/Logo"
@@ -86,8 +87,7 @@ export default function Home() {
 
         {/* HERO */}
         <section className="relative pt-40 pb-24 px-6 overflow-hidden">
-          <div className="orb absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#1E8BFF] blur-3xl translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
-          <div className="orb-2 absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-[#FF9800] blur-3xl -translate-x-1/3 translate-y-1/4 pointer-events-none"></div>
+          <HeroVideo />
 
           <div className="relative mx-auto max-w-6xl grid lg:grid-cols-[1.1fr_1fr] gap-16 items-center z-10">
             <FadeInStagger className="flex flex-col gap-8" staggerDelay={0.12}>
