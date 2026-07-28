@@ -183,6 +183,41 @@ body {
 .orb { animation: pulseOrb 6s ease-in-out infinite; }
 .orb-2 { animation: pulseOrb 6s ease-in-out 2s infinite; }
 
+/* ── Video de fondo del Hero ── */
+@keyframes heroVideoFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hero-video {
+  animation: heroVideoFadeIn 1.2s ease-out both;
+}
+
+.hero-video-glow {
+  background: radial-gradient(
+    circle at 80% 15%,
+    rgba(30, 139, 255, 0.18) 0%,
+    rgba(255, 152, 0, 0.08) 35%,
+    transparent 65%
+  );
+}
+
+.hero-video-overlay {
+  background: linear-gradient(
+    160deg,
+    rgba(11, 18, 32, 0.65) 0%,
+    rgba(11, 18, 32, 0.55) 45%,
+    rgba(11, 18, 32, 0.6) 100%
+  );
+}
+
+.hero-video-poster-fallback {
+  background-image: url("/hero-poster.jpg");
+  background-size: cover;
+  background-position: center;
+  display: none;
+}
+
 @keyframes flowPulse {
   0%, 100% { border-color: rgba(255, 255, 255, 0.09); transform: translateX(0); }
   50% { border-color: rgba(255, 152, 0, 0.4); transform: translateX(4px); }
@@ -211,6 +246,12 @@ body {
   }
   .marquee-track, .pulse-dot, .orb, .orb-2, .flow-item, .wa-float, .grad-text {
     animation: none !important;
+  }
+  .hero-video {
+    display: none;
+  }
+  .hero-video-poster-fallback {
+    display: block;
   }
 }
 
