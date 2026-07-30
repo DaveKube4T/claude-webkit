@@ -184,10 +184,6 @@ body {
 .orb-2 { animation: pulseOrb 6s ease-in-out 2s infinite; }
 
 /* ── Video de fondo del Hero ── */
-.hero-video {
-  will-change: opacity;
-}
-
 .hero-video-glow {
   background: radial-gradient(
     circle at 80% 15%,
