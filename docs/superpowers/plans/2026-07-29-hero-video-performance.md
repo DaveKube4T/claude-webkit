@@ -744,6 +744,22 @@ Esperado: solo los 7 archivos de la tabla de File Structure. Si aparece algo má
 
 Detener el proceso de `next start` en background (ver nota de entorno arriba sobre PID real en Windows).
 
+**Nota de actualización post-implementación — resultado real de la Task 7 (Step 2), no documentado hasta ahora en este archivo:**
+
+Lighthouse contra `http://localhost:3300/` (build de producción, mismos parámetros que el baseline del spec), comparado contra el baseline real de producción documentado en el spec:
+
+| Métrica | Baseline (producción) | Este run (localhost) | Delta |
+|---|---|---|---|
+| Performance score | 55/100 | **80/100** | +25 |
+| First Contentful Paint | 3.3s | **2.8s** | -15% |
+| Largest Contentful Paint | 6.0s | **3.1s** | -48% |
+| Total Blocking Time | 600ms | **370ms** | -38% |
+| Cumulative Layout Shift | 0 | **0** | sin cambio, sin regresión |
+
+Mejora clara y no marginal en las cuatro métricas de tiempo, CLS se mantiene en 0. Como ya anticipaba este mismo Step, los números de `localhost` son optimistas (sin latencia de red real ni CDN) — confirman que la dirección del cambio es correcta; la medición contra producción real ocurre en el gate de deploy, fuera de este plan.
+
+Se agrega esta tabla al plan review (encontrado en la revisión final del branch): el gate de "Verificación final" de abajo exige "mejora medible de Lighthouse" como criterio de salida, y hasta esta actualización esos números solo existían en el reporte del subagente, no en ningún artefacto del repo.
+
 ---
 
 ## Verificación final (gate antes de deploy)
