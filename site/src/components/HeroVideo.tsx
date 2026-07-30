@@ -19,6 +19,15 @@ export default function HeroVideo() {
     const handleReady = () => setReady(true)
     video.addEventListener("loadeddata", handleReady)
 
+    // Si el navegador ya alcanzo HAVE_CURRENT_DATA (readyState >= 2) antes de que
+    // este efecto corriera -- tipico en una visita repetida con el video ya en
+    // cache por el Cache-Control immutable -- el evento "loadeddata" ya se disparo
+    // y no se repite. readyState es un snapshot en vivo, no un evento: revisarlo
+    // aqui cubre el caso donde la transicion ya paso antes de escuchar.
+    if (video.readyState >= 2) {
+      setReady(true)
+    }
+
     const start = () => {
       video.play().catch(() => {
         // Autoplay bloqueado por el navegador — el poster se queda visible,
