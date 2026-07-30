@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // immutable asume que estos archivos nunca se editan en el mismo path —
+  // si hay que cambiar el video/poster, renombrar el archivo (ej. hero-loop-v2.mp4),
+  // no sobrescribir; de lo contrario el navegador sirve una copia vieja hasta 1 año.
   async headers() {
     return [
       {
