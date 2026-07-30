@@ -423,6 +423,14 @@ Puntos a tener en cuenta al escribir esto (no los cambies, son decisiones delibe
 - **Sin atributo `autoPlay`** en el `<video>` — la reproducción arranca manualmente vía `video.play()` en el efecto, solo cuando el navegador está idle.
 - **`window.matchMedia` y `requestIdleCallback` solo existen en el navegador**, no en el servidor — por eso todo esto vive dentro de `useEffect` (que solo corre en cliente), nunca en el cuerpo del componente.
 
+**Nota de actualización post-implementación:** la verificación real en navegador (Task 7) encontró una condición de carrera: si el video ya está en caché (algo que la Task 6 vuelve mucho más probable, con `Cache-Control: immutable`), el navegador puede disparar `loadeddata` *antes* de que el `useEffect` llegue a suscribir el listener — el evento no se repite, así que `ready` nunca pasa a `true` y el poster tapa el video para siempre. El fix agrega, justo después de `video.addEventListener("loadeddata", handleReady)`:
+```ts
+if (video.readyState >= 2) {
+  setReady(true)
+}
+```
+`video.readyState` es un snapshot en vivo (no un evento) — revisarlo justo después de suscribirse cubre el caso donde la transición a `HAVE_CURRENT_DATA` ya pasó antes de escuchar. `2` es `HTMLMediaElement.HAVE_CURRENT_DATA`, el mismo nivel que señala `loadeddata`, así que la condición es exactamente equivalente a "el evento ya se disparó", ni más laxa ni más estricta. El código de arriba en este documento no refleja esta línea — agregarla al implementar.
+
 - [ ] **Step 2: Verificar tipos, lint y build**
 
 ```bash
