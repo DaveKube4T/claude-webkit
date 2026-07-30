@@ -160,10 +160,6 @@ Buscar (bloque completo, línea ~186-219 en el estado actual):
 Reemplazar por:
 ```css
 /* ── Video de fondo del Hero ── */
-.hero-video {
-  will-change: opacity;
-}
-
 .hero-video-glow {
   background: radial-gradient(
     circle at 80% 15%,
@@ -198,6 +194,8 @@ Reemplazar por:
 ```
 
 `.hero-video-glow` y `.hero-video-overlay` quedan **exactamente igual** — no cambian, solo se muestran aquí completos para que el bloque de búsqueda sea inequívoco. El `@keyframes heroVideoFadeIn` desaparece (ya no lo usa nadie tras este cambio).
+
+**Nota de actualización post-implementación:** la primera versión de esta task incluía una regla `.hero-video { will-change: opacity; }`. El code review la encontró y la hizo quitar: el mecanismo de fade final vive enteramente en `.hero-video-poster-fallback` (la Task 4 solo agrega/quita la clase `--hidden` en esa capa, nunca en el `<video>` mismo) — el `<video>` nunca anima su propia opacidad, así que ese `will-change` solo forzaba una capa de composición GPU persistente en el elemento más pesado del Hero sin ningún beneficio, contradiciendo el objetivo de performance del plan. La regla `.hero-video { ... }` no existe en el estado final — solo quedan `.hero-video-glow`, `.hero-video-overlay`, `.hero-video-poster-fallback` y `.hero-video-poster-fallback--hidden`, ya reflejado en el bloque de arriba.
 
 - [ ] **Step 2: Extender la regla `prefers-reduced-motion` — SIN quitar nada de lo existente**
 
