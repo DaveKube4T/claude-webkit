@@ -277,6 +277,7 @@ Reemplazar por:
   animation: heroTextFadeUp 0.55s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
 }
 
+/* Asume exactamente 5 hijos directos en .hero-reveal (ver Task 5 del plan) */
 .hero-reveal > *:nth-child(1) { animation-delay: 0s; }
 .hero-reveal > *:nth-child(2) { animation-delay: 0.12s; }
 .hero-reveal > *:nth-child(3) { animation-delay: 0.24s; }
@@ -299,6 +300,15 @@ Esperado: build exitoso. Nadie usa `.hero-reveal` todavía (eso es la Task 5) �
 git add site/src/app/globals.css
 git commit -m "perf: animacion CSS nativa para el texto del Hero (reemplaza el gate de Framer Motion)"
 ```
+
+**Nota de actualización post-implementación:** el code review encontró que la regla global `prefers-reduced-motion` (la que fuerza `animation-duration: 0.01ms !important` y lista clases con `animation: none !important`) solo neutraliza la *duración* de `.hero-reveal > *`, no su `animation-delay` — usuarios con esa preferencia igual esperaban hasta 0.48s por elemento antes de verlo, con `opacity: 0` mientras tanto. Se agregó un fix (commit posterior) que extiende esa MISMA regla existente (no una nueva) con:
+```css
+.hero-reveal > * {
+  animation: none !important;
+  opacity: 1;
+}
+```
+Necesita las dos líneas juntas: quitar la animación sin forzar `opacity: 1` habría dejado el texto invisible para siempre (la única razón por la que llegaba a `opacity: 1` era la animación misma). El comentario de guardia sobre "5 hijos directos" ya está reflejado en el bloque de arriba.
 
 ---
 
