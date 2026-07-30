@@ -90,6 +90,8 @@ export default function Home() {
           <HeroVideo />
 
           <div className="relative mx-auto max-w-6xl grid lg:grid-cols-[1.1fr_1fr] gap-16 items-center z-10">
+            {/* .hero-reveal anima hijos por posición vía nth-child en globals.css.
+                Debe mantenerse en EXACTAMENTE 5 <div> hijos directos, mismo orden. */}
             <div className="hero-reveal flex flex-col gap-8">
               <div>
                 <div className="flex items-center gap-3 text-xs font-semibold tracking-wider text-[#94A3B8] uppercase">
