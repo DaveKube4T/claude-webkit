@@ -90,29 +90,29 @@ export default function Home() {
           <HeroVideo />
 
           <div className="relative mx-auto max-w-6xl grid lg:grid-cols-[1.1fr_1fr] gap-16 items-center z-10">
-            <FadeInStagger className="flex flex-col gap-8" staggerDelay={0.12}>
-              <FadeInItem>
+            <div className="hero-reveal flex flex-col gap-8">
+              <div>
                 <div className="flex items-center gap-3 text-xs font-semibold tracking-wider text-[#94A3B8] uppercase">
                   <span className="w-2 h-2 rounded-full bg-[#FF9800] pulse-dot"></span>
                   IA · Automatización · Desarrollo Web · Marketing
                 </div>
-              </FadeInItem>
+              </div>
 
-              <FadeInItem>
+              <div>
                 <h1 className="hero-title font-bold text-[#F1F5F9]" style={{ fontFamily: "var(--font-space-grotesk)" }}>
                   Automatiza hoy.<br />
                   <span className="grad-text">Escala mañana.</span>
                 </h1>
                 <div className="h-px grad-bg mt-4" style={{ width: "100px" }} aria-hidden="true"></div>
-              </FadeInItem>
+              </div>
 
-              <FadeInItem>
+              <div>
                 <p className="text-lg text-[#94A3B8] leading-relaxed max-w-lg">
                   Eliminamos el trabajo repetitivo de tu negocio con IA. Flujos inteligentes, agentes conversacionales y marketing automatizado para pymes que quieren crecer sin contratar más personas.
                 </p>
-              </FadeInItem>
+              </div>
 
-              <FadeInItem>
+              <div>
                 <div className="flex flex-wrap gap-4">
                   <a href="#contacto" className="btn-grad flex items-center gap-2 text-white font-semibold h-12 px-8 rounded-lg text-base">
                     Agendar llamada gratuita
@@ -122,9 +122,9 @@ export default function Home() {
                     Ver servicios
                   </a>
                 </div>
-              </FadeInItem>
+              </div>
 
-              <FadeInItem>
+              <div>
                 <div className="flex flex-wrap gap-6">
                   {["Diagnóstico gratis", "Sin permanencia", "Resultados en 30 días"].map((item) => (
                     <div key={item} className="flex items-center gap-2">
@@ -133,8 +133,8 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-              </FadeInItem>
-            </FadeInStagger>
+              </div>
+            </div>
 
             <Dashboard />
           </div>
