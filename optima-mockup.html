@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Optima Technology — Automatiza hoy. Escala mañana.</title>
+  <meta name="description" content="Eliminamos el trabajo repetitivo de tu negocio con IA. Flujos inteligentes, agentes conversacionales y marketing automatizado para pymes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            grotesk: ['Space Grotesk', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            slate: {
+              bg: '#1E293B',
+              mid: '#334155',
+              deep: '#162032',
+              card: '#243347',
+            },
+            emerald: {
+              DEFAULT: '#10B981',
+              hover: '#0EA572',
+            },
+            neutral: {
+              light: '#F1F5F9',
+              mid: '#CBD5E1',
+              muted: '#94A3B8',
+              dim: '#64748B',
+              dimmer: '#475569',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background-color: #1E293B; font-family: 'Inter', sans-serif; color: #F1F5F9; margin: 0; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes scaleX {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+    @keyframes pulse-orb {
+      0%, 100% { opacity: 0.05; transform: scale(1); }
+      50%       { opacity: 0.09; transform: scale(1.08); }
+    }
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-up   { animation: fadeUp 0.6s cubic-bezier(0.21,0.47,0.32,0.98) both; }
+    .animate-fade-in   { animation: fadeIn 0.6s ease both; }
+    .orb               { animation: pulse-orb 6s ease-in-out infinite; }
+    .orb-2             { animation: pulse-orb 6s ease-in-out 2s infinite; }
+    .green-line        { animation: scaleX 0.8s cubic-bezier(0.21,0.47,0.32,0.98) 0.6s both; transform-origin: left; }
+
+    .delay-1  { animation-delay: 0.12s; }
+    .delay-2  { animation-delay: 0.24s; }
+    .delay-3  { animation-delay: 0.36s; }
+    .delay-4  { animation-delay: 0.48s; }
+    .delay-5  { animation-delay: 0.60s; }
+
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s cubic-bezier(0.21,0.47,0.32,0.98), transform 0.6s cubic-bezier(0.21,0.47,0.32,0.98); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left  { opacity: 0; transform: translateX(-24px); transition: opacity 0.6s cubic-bezier(0.21,0.47,0.32,0.98), transform 0.6s cubic-bezier(0.21,0.47,0.32,0.98); }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(24px); transition: opacity 0.6s cubic-bezier(0.21,0.47,0.32,0.98), transform 0.6s cubic-bezier(0.21,0.47,0.32,0.98); }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    .stagger-1 { transition-delay: 0.00s; }
+    .stagger-2 { transition-delay: 0.12s; }
+    .stagger-3 { transition-delay: 0.24s; }
+    .stagger-4 { transition-delay: 0.36s; }
+
+    /* Card hover */
+    .card-hover { transition: border-color 0.25s, transform 0.25s; }
+    .card-hover:hover { border-color: rgba(16,185,129,0.45) !important; transform: translateY(-4px); }
+
+    /* Stat card */
+    .stat-card { transition: border-color 0.2s; }
+    .stat-card:hover { border-color: rgba(16,185,129,0.4); }
+
+    /* Nav */
+    nav a { transition: color 0.2s; }
+    nav a:hover { color: #10B981; }
+
+    /* Buttons */
+    .btn-primary { transition: background-color 0.2s; }
+    .btn-primary:hover { background-color: #0EA572; }
+    .btn-outline { transition: background-color 0.2s, color 0.2s; }
+    .btn-outline:hover { background-color: #334155; }
+
+    /* Icon hover */
+    .icon-link { transition: color 0.2s; }
+    .icon-link:hover { color: #10B981; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1E293B; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+    /* Mobile nav toggle */
+    #mobile-menu { display: none; }
+    #mobile-menu.open { display: flex; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="fixed top-0 left-0 right-0 z-50 border-b border-[#334155]/60 bg-[#1E293B]/90 backdrop-blur-md">
+  <div class="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
+    <a href="#" class="flex flex-col leading-none">
+      <span class="font-grotesk text-lg font-bold tracking-tight text-[#F1F5F9]">OPTIMA</span>
+      <span class="text-[10px] font-semibold tracking-[0.2em] text-[#10B981] uppercase">Technology</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-[#94A3B8]">
+      <a href="#servicios">Servicios</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#testimonios">Testimonios</a>
+      <a href="#contacto" class="bg-[#10B981] btn-primary text-white px-5 py-2 rounded-lg font-semibold text-sm">Agendar llamada</a>
+    </nav>
+    <button id="nav-toggle" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="Abrir menú">
+      <span class="w-5 h-0.5 bg-[#94A3B8] block"></span>
+      <span class="w-5 h-0.5 bg-[#94A3B8] block"></span>
+      <span class="w-5 h-0.5 bg-[#94A3B8] block"></span>
+    </button>
+  </div>
+  <div id="mobile-menu" class="md:hidden flex-col px-6 pb-6 gap-4 text-sm font-medium text-[#94A3B8] border-t border-[#334155]/60 pt-4">
+    <a href="#servicios" class="block hover:text-[#10B981]">Servicios</a>
+    <a href="#nosotros" class="block hover:text-[#10B981]">Nosotros</a>
+    <a href="#testimonios" class="block hover:text-[#10B981]">Testimonios</a>
+    <a href="#contacto" class="block bg-[#10B981] text-white px-5 py-2 rounded-lg font-semibold text-center w-fit">Agendar llamada</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="relative pt-32 pb-24 px-6 overflow-hidden">
+  <!-- Orbs -->
+  <div class="orb absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#10B981] blur-3xl translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
+  <div class="orb-2 absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-[#10B981] blur-3xl -translate-x-1/3 translate-y-1/4 pointer-events-none"></div>
+
+  <div class="relative mx-auto max-w-6xl grid lg:grid-cols-2 gap-16 items-center">
+    <!-- Left: copy -->
+    <div class="flex flex-col gap-8">
+      <span class="animate-fade-up w-fit bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase rounded-full">
+        Automatización con IA · Cali, Colombia
+      </span>
+      <div class="animate-fade-up delay-1">
+        <h1 class="font-grotesk text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight text-[#F1F5F9]">
+          Automatiza hoy.<br>
+          <span class="text-[#10B981]">Escala mañana.</span>
+        </h1>
+        <div class="h-px bg-[#10B981] mt-3 green-line" style="width:80px"></div>
+      </div>
+      <p class="animate-fade-up delay-2 text-lg text-[#94A3B8] leading-relaxed max-w-lg">
+        Eliminamos el trabajo repetitivo de tu negocio con IA. Flujos inteligentes, agentes conversacionales y marketing automatizado para pymes que quieren crecer sin contratar más personas.
+      </p>
+      <div class="animate-fade-up delay-3 flex flex-wrap gap-4">
+        <a href="#contacto" class="btn-primary flex items-center gap-2 bg-[#10B981] text-white font-semibold h-12 px-8 rounded-lg text-base">
+          Agendar llamada gratuita
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#servicios" class="btn-outline flex items-center gap-2 border border-[#334155] text-[#F1F5F9] h-12 px-8 rounded-lg text-base">
+          Ver servicios
+        </a>
+      </div>
+      <div class="animate-fade-up delay-4 flex flex-wrap gap-6">
+        <div class="flex items-center gap-2">
+          <svg width="16" height="16" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="text-sm text-[#94A3B8]">Sin permanencia</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg width="16" height="16" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="text-sm text-[#94A3B8]">Primera sesión gratis</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg width="16" height="16" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="text-sm text-[#94A3B8]">Resultados en 30 días</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: stats -->
+    <div class="animate-fade-up delay-2 grid grid-cols-2 gap-4">
+      <div class="stat-card bg-[#243347] border border-[#334155] rounded-xl p-6 flex flex-col gap-2">
+        <span class="font-grotesk text-4xl font-bold text-[#10B981]">3x</span>
+        <span class="text-sm text-[#94A3B8]">más rápido en procesos clave</span>
+      </div>
+      <div class="stat-card bg-[#243347] border border-[#334155] rounded-xl p-6 flex flex-col gap-2">
+        <span class="font-grotesk text-4xl font-bold text-[#10B981]">60%</span>
+        <span class="text-sm text-[#94A3B8]">reducción de tareas manuales</span>
+      </div>
+      <div class="stat-card bg-[#243347] border border-[#334155] rounded-xl p-6 flex flex-col gap-2">
+        <span class="font-grotesk text-4xl font-bold text-[#10B981]">24/7</span>
+        <span class="text-sm text-[#94A3B8]">operación sin intervención humana</span>
+      </div>
+      <div class="stat-card bg-[#243347] border border-[#334155] rounded-xl p-6 flex flex-col gap-2">
+        <span class="font-grotesk text-4xl font-bold text-[#10B981]">30d</span>
+        <span class="text-sm text-[#94A3B8]">tiempo promedio hasta primer resultado</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="servicios" class="py-24 px-6 bg-[#162032]">
+  <div class="mx-auto max-w-6xl">
+    <div class="reveal mb-16 max-w-2xl">
+      <span class="inline-block mb-4 bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase rounded-full">Servicios</span>
+      <h2 class="font-grotesk text-4xl font-bold text-[#F1F5F9] leading-tight mb-4">Todo lo que necesitas para operar a otro nivel</h2>
+      <p class="text-[#94A3B8] text-lg leading-relaxed">No vendemos tecnología. Vendemos tiempo recuperado, errores eliminados y procesos que funcionan solos.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Card 1 -->
+      <div class="reveal stagger-1 card-hover bg-[#1E293B] border border-[#334155] rounded-2xl p-8 flex flex-col gap-6">
+        <div class="w-12 h-12 bg-[#10B981]/10 rounded-xl flex items-center justify-center">
+          <svg width="24" height="24" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div>
+          <h3 class="font-grotesk text-xl font-bold text-[#F1F5F9] mb-3">Automatización de Flujos con IA</h3>
+          <p class="text-[#94A3B8] text-sm leading-relaxed">Tareas repetitivas en todos tus departamentos, eliminadas. Usamos disparadores inteligentes y lógica de decisión para que tu equipo se enfoque en lo que importa.</p>
+        </div>
+        <ul class="flex flex-col gap-2">
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Mapeo de flujos de trabajo</li>
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Integración de sistemas en tiempo real</li>
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Resultado validado</li>
+        </ul>
+      </div>
+      <!-- Card 2 -->
+      <div class="reveal stagger-2 card-hover bg-[#1E293B] border border-[#334155] rounded-2xl p-8 flex flex-col gap-6">
+        <div class="w-12 h-12 bg-[#10B981]/10 rounded-xl flex items-center justify-center">
+          <svg width="24" height="24" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h8"/></svg>
+        </div>
+        <div>
+          <h3 class="font-grotesk text-xl font-bold text-[#F1F5F9] mb-3">Chatbots y Agentes Conversacionales</h3>
+          <p class="text-[#94A3B8] text-sm leading-relaxed">Soporte 24/7 sin contratar más personal. Nuestros agentes IA cualifican leads, gestionan reservas y cierran ventas mientras tú duermes.</p>
+        </div>
+        <ul class="flex flex-col gap-2">
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Atención al cliente automatizada</li>
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Cualificación de leads</li>
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Agente de ventas IA</li>
+        </ul>
+      </div>
+      <!-- Card 3 -->
+      <div class="reveal stagger-3 card-hover bg-[#1E293B] border border-[#334155] rounded-2xl p-8 flex flex-col gap-6">
+        <div class="w-12 h-12 bg-[#10B981]/10 rounded-xl flex items-center justify-center">
+          <svg width="24" height="24" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div>
+          <h3 class="font-grotesk text-xl font-bold text-[#F1F5F9] mb-3">Diseño de Páginas Web</h3>
+          <p class="text-[#94A3B8] text-sm leading-relaxed">Webs que trabajan por ti. Landing pages, sitios corporativos y e-commerce optimizados para convertir visitantes en clientes desde el primer clic.</p>
+        </div>
+        <ul class="flex flex-col gap-2">
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Alto impacto visual</li>
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Optimización SEO</li>
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Diseño orientado a conversión</li>
+        </ul>
+      </div>
+      <!-- Card 4 -->
+      <div class="reveal stagger-4 card-hover bg-[#1E293B] border border-[#334155] rounded-2xl p-8 flex flex-col gap-6">
+        <div class="w-12 h-12 bg-[#10B981]/10 rounded-xl flex items-center justify-center">
+          <svg width="24" height="24" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <div>
+          <h3 class="font-grotesk text-xl font-bold text-[#F1F5F9] mb-3">Automatización del Marketing</h3>
+          <p class="text-[#94A3B8] text-sm leading-relaxed">Secuencias de email que venden solas, personalización a escala y contenido generado con IA. Tu marketing siempre activo, siempre relevante.</p>
+        </div>
+        <ul class="flex flex-col gap-2">
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Secuencias de email automatizadas</li>
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Motor de personalización</li>
+          <li class="flex items-center gap-3 text-sm text-[#CBD5E1]"><svg width="14" height="14" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Contenido generado con IA</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="nosotros" class="py-24 px-6">
+  <div class="mx-auto max-w-6xl grid lg:grid-cols-2 gap-16 items-center">
+    <div class="reveal-left flex flex-col gap-8">
+      <span class="inline-block w-fit bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase rounded-full">Nosotros</span>
+      <h2 class="font-grotesk text-4xl font-bold text-[#F1F5F9] leading-tight">Somos los que hacen que la IA trabaje para tu negocio</h2>
+      <p class="text-[#94A3B8] text-lg leading-relaxed">Optima Technology nació en Cali con un objetivo claro: hacer que la automatización inteligente sea accesible para pymes que no tienen un departamento de IT pero sí tienen ambición de crecer.</p>
+      <p class="text-[#94A3B8] leading-relaxed">No somos una agencia de software que factura por horas. Somos socios técnicos que miden su éxito en los resultados de tu negocio. Cada proyecto empieza con una sesión gratuita donde mapeamos tus procesos y calculamos el impacto real antes de cobrar un peso.</p>
+      <a href="#contacto" class="btn-primary flex items-center gap-2 w-fit bg-[#10B981] text-white font-semibold h-11 px-8 rounded-lg">
+        Hablar con el equipo
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="reveal-right grid grid-cols-2 gap-4">
+      <div class="bg-[#243347] border border-[#334155] rounded-xl p-6 flex flex-col gap-3 hover:border-[#10B981]/30 transition-colors duration-300">
+        <span class="text-3xl">🎯</span>
+        <h4 class="font-grotesk text-sm font-semibold text-[#F1F5F9]">Enfoque en resultados</h4>
+        <p class="text-xs text-[#94A3B8] leading-relaxed">Medimos todo. Si no genera impacto, lo cambiamos.</p>
+      </div>
+      <div class="bg-[#243347] border border-[#334155] rounded-xl p-6 flex flex-col gap-3 hover:border-[#10B981]/30 transition-colors duration-300">
+        <span class="text-3xl">⚡</span>
+        <h4 class="font-grotesk text-sm font-semibold text-[#F1F5F9]">Implementación rápida</h4>
+        <p class="text-xs text-[#94A3B8] leading-relaxed">Primeros resultados en 30 días o menos.</p>
+      </div>
+      <div class="bg-[#243347] border border-[#334155] rounded-xl p-6 flex flex-col gap-3 hover:border-[#10B981]/30 transition-colors duration-300">
+        <span class="text-3xl">🔒</span>
+        <h4 class="font-grotesk text-sm font-semibold text-[#F1F5F9]">Sin dependencia de nosotros</h4>
+        <p class="text-xs text-[#94A3B8] leading-relaxed">Tus flujos son tuyos. Los documentamos para que los puedas mantener.</p>
+      </div>
+      <div class="bg-[#243347] border border-[#334155] rounded-xl p-6 flex flex-col gap-3 hover:border-[#10B981]/30 transition-colors duration-300">
+        <span class="text-3xl">📈</span>
+        <h4 class="font-grotesk text-sm font-semibold text-[#F1F5F9]">Escalable desde el día uno</h4>
+        <p class="text-xs text-[#94A3B8] leading-relaxed">Construimos para que crezca contigo, no para que tengas que reemplazarlo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="border-[#334155]/50 mx-auto max-w-6xl" />
+
+<!-- TESTIMONIALS -->
+<section id="testimonios" class="py-24 px-6 bg-[#162032]">
+  <div class="mx-auto max-w-6xl">
+    <div class="reveal mb-16 max-w-2xl">
+      <span class="inline-block mb-4 bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase rounded-full">Testimonios</span>
+      <h2 class="font-grotesk text-4xl font-bold text-[#F1F5F9] leading-tight">Lo que dicen los que ya automatizaron</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <article class="reveal stagger-1 bg-[#1E293B] border border-[#334155] rounded-2xl p-8 flex flex-col gap-6 hover:border-[#10B981]/30 transition-colors duration-300">
+        <div class="flex gap-1">
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <blockquote class="text-[#CBD5E1] text-sm leading-relaxed flex-1">"Automatizamos el proceso de cotización que nos tomaba 3 horas al día. Ahora tarda 4 minutos. El ROI lo vimos en el primer mes."</blockquote>
+        <div>
+          <div class="text-sm font-semibold text-[#F1F5F9]">Carlos Mejía</div>
+          <div class="text-xs text-[#64748B]">CEO, Distribuidora Andina</div>
+        </div>
+      </article>
+      <article class="reveal stagger-2 bg-[#1E293B] border border-[#334155] rounded-2xl p-8 flex flex-col gap-6 hover:border-[#10B981]/30 transition-colors duration-300">
+        <div class="flex gap-1">
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <blockquote class="text-[#CBD5E1] text-sm leading-relaxed flex-1">"El chatbot agenda citas, responde preguntas frecuentes y filtra leads antes de que lleguen a nuestro equipo. Redujimos carga operativa un 60%."</blockquote>
+        <div>
+          <div class="text-sm font-semibold text-[#F1F5F9]">Laura Ospina</div>
+          <div class="text-xs text-[#64748B]">Directora Comercial, Clínica Salud+</div>
+        </div>
+      </article>
+      <article class="reveal stagger-3 bg-[#1E293B] border border-[#334155] rounded-2xl p-8 flex flex-col gap-6 hover:border-[#10B981]/30 transition-colors duration-300">
+        <div class="flex gap-1">
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" fill="#10B981" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <blockquote class="text-[#CBD5E1] text-sm leading-relaxed flex-1">"Pensé que la automatización era solo para empresas grandes. Optima me demostró lo contrario. En 3 semanas teníamos todo funcionando."</blockquote>
+        <div>
+          <div class="text-sm font-semibold text-[#F1F5F9]">Andrés Varela</div>
+          <div class="text-xs text-[#64748B]">Fundador, AgriTech Colombia</div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="py-20 px-6">
+  <div class="reveal mx-auto max-w-4xl bg-[#10B981]/8 border border-[#10B981]/20 rounded-3xl p-12 text-center flex flex-col items-center gap-6 hover:border-[#10B981]/35 transition-colors duration-500" style="background-color: rgba(16,185,129,0.05)">
+    <h2 class="font-grotesk text-4xl lg:text-5xl font-bold text-[#F1F5F9] leading-tight max-w-2xl">¿Cuántas horas está perdiendo tu equipo esta semana?</h2>
+    <p class="text-[#94A3B8] text-lg max-w-lg leading-relaxed">Una sesión de diagnóstico gratuita. Sin compromiso. Calculamos el impacto en números antes de proponerte cualquier cosa.</p>
+    <a href="#contacto" class="btn-primary flex items-center gap-2 bg-[#10B981] text-white font-semibold h-12 px-8 rounded-lg text-base">
+      Quiero mi diagnóstico gratis
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contacto" class="py-24 px-6 bg-[#162032]">
+  <div class="mx-auto max-w-6xl grid lg:grid-cols-2 gap-16">
+    <div class="reveal-left flex flex-col gap-8">
+      <span class="inline-block w-fit bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase rounded-full">Contacto</span>
+      <h2 class="font-grotesk text-4xl font-bold text-[#F1F5F9] leading-tight">Hablemos de lo que tu negocio puede lograr</h2>
+      <p class="text-[#94A3B8] text-lg leading-relaxed">Primera sesión siempre gratis. Te respondemos en menos de 24 horas y coordinamos una llamada sin rodeos donde mapeamos tus procesos y calculamos el impacto real.</p>
+      <a href="mailto:contacto@optimatechnology.co" class="icon-link flex items-center gap-3 text-[#94A3B8] text-sm w-fit">
+        <div class="w-9 h-9 bg-[#334155] rounded-lg flex items-center justify-center">
+          <svg width="16" height="16" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        contacto@optimatechnology.co
+      </a>
+    </div>
+    <div class="reveal-right bg-[#1E293B] border border-[#334155] rounded-2xl p-8">
+      <form onsubmit="return false;" class="flex flex-col gap-5">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-2">
+            <label for="nombre" class="text-sm font-medium text-[#CBD5E1]">Nombre</label>
+            <input id="nombre" type="text" placeholder="Tu nombre" class="bg-[#162032] border border-[#334155] rounded-lg px-4 h-11 text-sm text-[#F1F5F9] placeholder-[#475569] focus:outline-none focus:border-[#10B981] transition-colors" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="empresa" class="text-sm font-medium text-[#CBD5E1]">Empresa</label>
+            <input id="empresa" type="text" placeholder="Nombre de tu empresa" class="bg-[#162032] border border-[#334155] rounded-lg px-4 h-11 text-sm text-[#F1F5F9] placeholder-[#475569] focus:outline-none focus:border-[#10B981] transition-colors" />
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="email" class="text-sm font-medium text-[#CBD5E1]">Correo electrónico</label>
+          <input id="email" type="email" placeholder="tu@empresa.com" class="bg-[#162032] border border-[#334155] rounded-lg px-4 h-11 text-sm text-[#F1F5F9] placeholder-[#475569] focus:outline-none focus:border-[#10B981] transition-colors" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="mensaje" class="text-sm font-medium text-[#CBD5E1]">¿Qué proceso quieres automatizar?</label>
+          <textarea id="mensaje" rows="4" placeholder="Cuéntame brevemente qué hace tu empresa y qué tareas te quitan más tiempo..." class="bg-[#162032] border border-[#334155] rounded-lg px-4 py-3 text-sm text-[#F1F5F9] placeholder-[#475569] focus:outline-none focus:border-[#10B981] transition-colors resize-none"></textarea>
+        </div>
+        <button type="submit" class="btn-primary flex items-center justify-center gap-2 bg-[#10B981] text-white font-semibold h-12 rounded-lg text-base w-full">
+          Enviar y agendar sesión
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <p class="text-xs text-center text-[#475569]">Sin spam. Te respondemos en menos de 24 horas.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t border-[#334155] py-12 px-6">
+  <div class="mx-auto max-w-6xl flex flex-col gap-8">
+    <div class="flex flex-col md:flex-row justify-between gap-8">
+      <div class="flex flex-col gap-3 max-w-xs">
+        <div class="flex flex-col leading-none">
+          <span class="font-grotesk text-lg font-bold tracking-tight text-[#F1F5F9]">OPTIMA</span>
+          <span class="text-[10px] font-semibold tracking-[0.2em] text-[#10B981] uppercase">Technology</span>
+        </div>
+        <p class="text-xs text-[#64748B] leading-relaxed">Automatizamos los procesos de tu negocio con IA. Cali, Colombia.</p>
+      </div>
+      <div class="flex flex-wrap gap-12">
+        <div class="flex flex-col gap-3">
+          <span class="text-xs font-semibold text-[#F1F5F9] uppercase tracking-wide">Servicios</span>
+          <a href="#servicios" class="text-xs text-[#64748B] hover:text-[#94A3B8] transition-colors">Automatización con IA</a>
+          <a href="#servicios" class="text-xs text-[#64748B] hover:text-[#94A3B8] transition-colors">Chatbots y Agentes</a>
+          <a href="#servicios" class="text-xs text-[#64748B] hover:text-[#94A3B8] transition-colors">Diseño Web</a>
+          <a href="#servicios" class="text-xs text-[#64748B] hover:text-[#94A3B8] transition-colors">Marketing Automatizado</a>
+        </div>
+        <div class="flex flex-col gap-3">
+          <span class="text-xs font-semibold text-[#F1F5F9] uppercase tracking-wide">Empresa</span>
+          <a href="#nosotros" class="text-xs text-[#64748B] hover:text-[#94A3B8] transition-colors">Nosotros</a>
+          <a href="#testimonios" class="text-xs text-[#64748B] hover:text-[#94A3B8] transition-colors">Testimonios</a>
+          <a href="#contacto" class="text-xs text-[#64748B] hover:text-[#94A3B8] transition-colors">Contacto</a>
+        </div>
+      </div>
+      <div class="flex flex-col gap-3">
+        <span class="text-xs font-semibold text-[#F1F5F9] uppercase tracking-wide">Redes sociales</span>
+        <div class="flex gap-3">
+          <a href="#" aria-label="Instagram" class="icon-link w-9 h-9 bg-[#334155] rounded-lg flex items-center justify-center text-[#64748B]">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn" class="icon-link w-9 h-9 bg-[#334155] rounded-lg flex items-center justify-center text-[#64748B]">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="#" aria-label="X / Twitter" class="icon-link w-9 h-9 bg-[#334155] rounded-lg flex items-center justify-center text-[#64748B]">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <hr class="border-[#334155]/50" />
+    <div class="flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-[#475569]">
+      <span>© 2026 Optima Technology. Todos los derechos reservados.</span>
+      <span>Built with <a href="https://tododeia.com" target="_blank" class="text-[#64748B] hover:text-[#94A3B8] transition-colors">Claude Web Builder by Tododeia</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile nav
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('mobile-menu');
+  toggle.addEventListener('click', () => menu.classList.toggle('open'));
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12, rootMargin: '-60px' });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
