@@ -1,6 +1,7 @@
-# Built landing page
-site/
 build/
+
+# Datos reales de miembros (PII) - nunca deben subirse al repo
+contexto/datos-miembros/
 
 # Dependencies
 node_modules/

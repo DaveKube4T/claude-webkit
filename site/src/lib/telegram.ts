@@ -1,0 +1,116 @@
+import { supabaseAdmin } from "./supabase";
+
+const TELEGRAM_API = "https://api.telegram.org";
+
+function botToken() {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) throw new Error("Falta TELEGRAM_BOT_TOKEN en .env.local");
+  return token;
+}
+
+// Menú principal como botones INLINE (pegados debajo del mensaje) — a
+// diferencia del teclado de respuesta clásico, estos se ven siempre sin que
+// el usuario tenga que tocar ningún ícono extra. callback_data identifica
+// cada opción cuando Telegram nos avisa el tap.
+export const MENU_PRINCIPAL: { texto: string; data: string }[][] = [
+  [{ texto: "⚛️ Mis paquetes", data: "menu_paquetes" }],
+  [{ texto: "🗳️ Mis solicitudes", data: "menu_solicitudes" }],
+  [{ texto: "📍 Reportar un error", data: "menu_reportar" }],
+];
+
+// Categorías del "Reportar un error" — texto visible (con su emoji) y una
+// clave corta sin espacios para el callback_data del botón.
+export const CATEGORIAS_ERROR: Record<string, string> = {
+  err_comprobante: "🧐 No me reconoce el comprobante",
+  err_hash: "🖱️ El hash/referencia está mal",
+  err_monto: "💵 El monto no coincide",
+  err_paquete: "💎 Elegí el paquete equivocado",
+  err_otro: "📞 Otro problema",
+};
+
+export async function enviarMensajeTelegram(
+  chatId: string,
+  texto: string,
+  opciones?: {
+    conMenu?: boolean;
+    inlineKeyboard?: { texto: string; data: string }[][];
+    removerTeclado?: boolean;
+    markdown?: boolean;
+  }
+) {
+  const filas = opciones?.conMenu ? MENU_PRINCIPAL : opciones?.inlineKeyboard;
+  const replyMarkup = opciones?.removerTeclado
+    ? { remove_keyboard: true }
+    : filas
+    ? { inline_keyboard: filas.map((fila) => fila.map((b) => ({ text: b.texto, callback_data: b.data }))) }
+    : undefined;
+
+  const res = await fetch(`${TELEGRAM_API}/bot${botToken()}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: texto,
+      reply_markup: replyMarkup,
+      parse_mode: opciones?.markdown ? "Markdown" : undefined,
+    }),
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok || !data?.ok) {
+    throw new Error(data?.description ?? "No se pudo enviar el mensaje por Telegram.");
+  }
+
+  return data;
+}
+
+// Le dice a Telegram "ya procesamos el tap" para que el botón deje de tildar
+// el ícono de carga. Best-effort, no rompe nada si falla.
+export async function responderCallbackQuery(callbackQueryId: string) {
+  await fetch(`${TELEGRAM_API}/bot${botToken()}/answerCallbackQuery`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ callback_query_id: callbackQueryId }),
+  }).catch(() => null);
+}
+
+// Notificación "best effort": si la persona no tiene chat_id todavía, o si el
+// envío falla por cualquier motivo, no rompe la acción principal (aprobar,
+// rechazar, etc.) — solo registra el intento en consola.
+export async function notificarPersona(personaId: string, texto: string) {
+  const { data: persona } = await supabaseAdmin
+    .from("personas")
+    .select("telegram_chat_id")
+    .eq("id", personaId)
+    .maybeSingle();
+
+  if (!persona?.telegram_chat_id) return;
+
+  try {
+    await enviarMensajeTelegram(persona.telegram_chat_id, texto);
+  } catch (err) {
+    console.error("No se pudo notificar por Telegram a", personaId, err);
+  }
+}
+
+// Avisa a todo el equipo marcado con `recibe_avisos=true` que tenga su
+// chat_id activado. Best-effort igual que notificarPersona: nunca rompe la
+// acción principal (crear solicitud, reportar error, mandar mensaje).
+export async function notificarEquipo(texto: string) {
+  const { data: equipo } = await supabaseAdmin
+    .from("usuarios")
+    .select("telegram_chat_id")
+    .eq("recibe_avisos", true)
+    .not("telegram_chat_id", "is", null);
+
+  if (!equipo?.length) return;
+
+  await Promise.all(
+    equipo.map((u) =>
+      enviarMensajeTelegram(u.telegram_chat_id as string, texto).catch((err) =>
+        console.error("No se pudo notificar al equipo por Telegram", err)
+      )
+    )
+  );
+}
