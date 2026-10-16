@@ -13,20 +13,6 @@ const PAQUETES = [
   "Alemán con Acceso y Activación",
 ];
 const OTRO = "__otro__";
-
-function imagenDePaquete(paquete: string): string | null {
-  if (/sociedad\\s*an[oó]nima|armado de s\\.?a\\.?/i.test(paquete)) return \"/images/packs/sociedad-anonima.png\";
-  if (/alem[aá]n/i.test(paquete)) return \"/images/packs/aleman.png\";
-  if (/acceso\\s*y\\s*activaci[oó]n/i.test(paquete)) return \"/images/packs/acceso.png\";
-  const match = paquete.match(/pack\\s*(\\d)/i);
-  if (!match) return null;
-  return `/images/packs/pack-${match[1]}.png`;
-}
-
-function imagenDePaqueteAleman(paquete: string): string | null {
-  if (/alem[aá]n/i.test(paquete)) return "/images/packs/aleman.png";
-  return null;
-}
 function imagenDePaquete(paquete: string): string | null {
   if (/sociedad\s*an[oó]nima|armado de s\.?a\.?/i.test(paquete)) return "/images/packs/sociedad-anonima.png";
   if (/alem[aá]n/i.test(paquete)) return "/images/packs/aleman.png";
@@ -44,21 +30,12 @@ export default function VidrieraPage() {
   const [password2, setPassword2] = useState("");
   const [paqueteSel, setPaqueteSel] = useState("");
   const [paqueteOtro, setPaqueteOtro] = useState("");
-  const [colaboradores, setColaboradores] = useState<string[]>([]);
   const [liderSel, setLiderSel] = useState("");
   const [liderOtro, setLiderOtro] = useState("");
   const [hash, setHash] = useState("");
   const [archivo, setArchivo] = useState<File | null>(null);
   const [enviando, setEnviando] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/publico/opciones")
-      .then((res) => res.json())
-      .then((data) => setColaboradores(data.colaboradores ?? []))
-      .catch(() => null);
-  }, []);
   const [error, setError] = useState<string | null>(null);
-  const [packAmpliado, setPackAmpliado] = useState<string | null>(null);
   const [packHover, setPackHover] = useState<string | null>(null);
 
   async function enviar(e: React.FormEvent) {
@@ -66,7 +43,7 @@ export default function VidrieraPage() {
     setError(null);
 
     const paquete = paqueteSel === OTRO ? paqueteOtro.trim() : paqueteSel;
-    const lider = liderSel === OTRO ? liderOtro.trim() : liderSel === "no_segura" ? "" : liderSel;
+    const lider = liderSel === OTRO ? liderOtro.trim() : liderSel;
 
     if (!nombre.trim() || !telegram.trim() || !password || !paquete) {
       setError("Completá nombre, Telegram, contraseña y paquete.");
@@ -81,7 +58,7 @@ export default function VidrieraPage() {
       return;
     }
     if (!liderSel) {
-      setError("Elegí tu colaboradora (o \"No estoy segura\").");
+      setError("Elegí tu colaborador/a.");
       return;
     }
     if (!hash.trim()) {
@@ -144,7 +121,6 @@ export default function VidrieraPage() {
             Unite a Resonancia
           </h1>
           <p style={{ fontSize: 13, color: "rgba(23,35,61,.65)", maxWidth: 420, margin: "0 auto" }}>
-            {/* Texto genérico — pendiente de redacción final. */}
             Creá tu cuenta, solicitá tu paquete y subí tu comprobante. El equipo revisa y
             confirma tu aporte voluntario a la brevedad.
           </p>
@@ -241,19 +217,51 @@ export default function VidrieraPage() {
           </h2>
 
           {paqueteSel && paqueteSel !== OTRO && imagenDePaquete(paqueteSel) && (
-            <img
-              src={imagenDePaquete(paqueteSel)!}
-              alt={paqueteSel}
-              style={{
-                width: 120,
-                height: 120,
-                objectFit: "contain",
-                objectPosition: "center",
-                margin: "0 auto",
-                display: "block",
-              }}
-            />
-          )}
+  <>
+    <img
+      src={imagenDePaquete(paqueteSel)!}
+      alt={paqueteSel}
+      onClick={() => setPackHover(paqueteSel)}
+      style={{
+        width: 120,
+        height: 120,
+        objectFit: "contain",
+        objectPosition: "center",
+        margin: "0 auto",
+        display: "block",
+        cursor: "pointer",
+        borderRadius: 12,
+        border: "2px dashed rgba(117,104,168,.3)",
+        padding: 8,
+      }}
+    />
+    {packHover && (
+      <div
+        onClick={() => setPackHover(null)}
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0,0,0,.85)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 9999,
+          cursor: "pointer",
+        }}
+      >
+        <img
+          src={imagenDePaquete(paqueteSel)!}
+          alt={paqueteSel}
+          style={{
+            maxWidth: "95vw",
+            maxHeight: "90vh",
+            objectFit: "contain",
+          }}
+        />
+      </div>
+    )}
+  </>
+)}   
 
           <label style={{ fontSize: 12, fontWeight: 600 }}>
             Solicitá tu paquete
@@ -286,7 +294,7 @@ export default function VidrieraPage() {
           )}
 
           <label style={{ fontSize: 12, fontWeight: 600 }}>
-            Colaboradora
+            Colaborador/a
             <select
               value={liderSel}
               onChange={(e) => setLiderSel(e.target.value)}
@@ -294,15 +302,9 @@ export default function VidrieraPage() {
               style={campoEstilo}
             >
               <option value="" disabled>
-                Elegí tu colaboradora
+                Elegí tu colaborador/a
               </option>
-              <option value="no_segura">No estoy segura</option>
-              <option value="Página web">Entré directo por la página web</option>
-              {colaboradores.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
+              <option value="Página web">Entré por la página web</option>
               <option value={OTRO}>Otro…</option>
             </select>
           </label>
@@ -311,7 +313,7 @@ export default function VidrieraPage() {
             <input
               value={liderOtro}
               onChange={(e) => setLiderOtro(e.target.value)}
-              placeholder="Escribí el nombre de tu colaboradora"
+              placeholder="Escribí el nombre de tu colaborador/a"
               required
               style={campoEstilo}
             />
@@ -341,6 +343,26 @@ export default function VidrieraPage() {
           {error && (
             <p style={{ margin: 0, fontSize: 12, color: "#A32D2D" }}>{error}</p>
           )}
+
+          <a
+            href="https://t.me/+s8-olxXZwjk0NmIx"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "block",
+              textAlign: "center",
+              padding: "12px 14px",
+              borderRadius: 12,
+              background: "#2AABEE",
+              color: "#fff",
+              fontSize: 13,
+              fontWeight: 700,
+              textDecoration: "none",
+              transition: "opacity 0.2s",
+            }}
+          >
+            Más detalles en nuestro grupo de Telegram →
+          </a>
 
           <button
             type="submit"
@@ -379,4 +401,4 @@ const campoEstilo: React.CSSProperties = {
   border: "1px solid rgba(23,35,61,.15)",
   fontSize: 13,
   background: "#fff",
-};
+};   
