@@ -96,10 +96,10 @@ export async function POST(req: NextRequest) {
         textoRespuesta += bloque.text;
       }
     }
-  } catch (err) {
-    console.error("Error llamando a Claude:", err);
+  } catch (err: any) {
+    console.error("Error detallado llamando a Groq (Perfil Financiero):", err?.message || err);
     return NextResponse.json(
-      { error: "No se pudo generar la respuesta de la guía. Intenta de nuevo." },
+      { error: `Error de IA: ${err?.message || "Desconocido"}` },
       { status: 502 }
     );
   }
