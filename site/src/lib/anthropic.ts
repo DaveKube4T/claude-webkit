@@ -45,7 +45,7 @@ export const anthropic = {
           Authorization: `Bearer ${GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "openai/gpt-oss-120b",
+          model: "meta-llama/llama-prompt-guard-2-22m",
           max_tokens: params.max_tokens,
           temperature: params.temperature ?? 0.7,
           messages,
