@@ -46,7 +46,7 @@ export const anthropic = {
         },
         body: JSON.stringify({
           model: "meta-llama/llama-prompt-guard-2-22m",
-          max_tokens: params.max_tokens,
+          max_tokens: Math.min(params.max_tokens, 512),
           temperature: params.temperature ?? 0.7,
           messages,
         }),
