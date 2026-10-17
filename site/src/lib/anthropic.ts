@@ -31,11 +31,12 @@ export const anthropic = {
     async create(params: CreateParams): Promise<CreateResponse> {
       const messages: { role: string; content: string }[] = [];
 
-      // Para modelos de clasificación como prompt-guard, Groq exige un único mensaje de usuario
-      const textoCombinado = [
-        params.system ? `[Instrucciones]:\n${params.system}\n` : "",
-        ...params.messages.map((m) => `${m.role === "user" ? "Usuario" : "Asistente"}: ${m.content}`)
-      ].filter(Boolean).join("\n\n");
+      if (params.system) {
+        messages.push({ role: "system", content: params.system });
+      }
+      for (const msg of params.messages) {
+        messages.push({ role: msg.role, content: msg.content });
+      }
 
       const res = await fetch(`${GROQ_BASE}/chat/completions`, {
         method: "POST",
@@ -44,10 +45,10 @@ export const anthropic = {
           Authorization: `Bearer ${GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "meta-llama/llama-prompt-guard-2-22m",
-          max_tokens: Math.min(params.max_tokens, 512),
+          model: "llama-3.3-70b-versatile",
+          max_tokens: params.max_tokens,
           temperature: params.temperature ?? 0.7,
-          messages: [{ role: "user", content: textoCombinado }],
+          messages,
         }),
       });
 
