@@ -45,7 +45,7 @@ export const anthropic = {
           Authorization: `Bearer ${GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "llama-3.1-8b-instant",
+          model: "llama3-70b-8192",
           max_tokens: params.max_tokens,
           temperature: params.temperature ?? 0.7,
           messages,
