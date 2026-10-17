@@ -65,6 +65,20 @@ export default function SolicitudesPage() {
   const [hash, setHash] = useState("");
   const [archivo, setArchivo] = useState<File | null>(null);
   const archivoInputRef = useRef<HTMLInputElement>(null);
+
+  interface PagoParcial {
+    id: string;
+    hash: string;
+    monto: string;
+    archivo: File | null;
+  }
+  const [pagosParciales, setPagosParciales] = useState<PagoParcial[]>([
+    { id: "1", hash: "", monto: "", archivo: null },
+  ]);
+
+  const esPaqueteParcial = (p: string) => {
+    return /pack\s*(1|3|4)\b/i.test(p);
+  };
   const [enviando, setEnviando] = useState(false);
   const [aviso, setAviso] = useState<string | null>(null);
   const [packAmpliado, setPackAmpliado] = useState<PackReferencia | null>(null);
@@ -107,17 +121,90 @@ export default function SolicitudesPage() {
       setAviso("Elegí o escribí un paquete.");
       return;
     }
-    if (!hash.trim()) {
-      setAviso("El hash o referencia de pago es obligatorio.");
-      return;
+
+    const esParcial = esPaqueteParcial(paquete);
+
+    if (esParcial) {
+      // Validar que al menos haya un pago parcial con hash y archivo/monto
+      for (let i = 0; i < pagosParciales.length; i++) {
+        if (!pagosParciales[i].hash.trim()) {
+          setAviso(`El hash del Pago ${i + 1} es obligatorio.`);
+          return;
+        }
+        if (!pagosParciales[i].archivo) {
+          setAviso(`El comprobante del Pago ${i + 1} es obligatorio.`);
+          return;
+        }
+      }
+    } else {
+      if (!hash.trim()) {
+        setAviso("El hash o referencia de pago es obligatorio.");
+        return;
+      }
+      if (!archivo) {
+        setAviso("El comprobante es obligatorio.");
+        return;
+      }
     }
-    if (!archivo) {
-      setAviso("El comprobante es obligatorio.");
-      return;
-    }
+
     const lider = colaboradorSel === OTRO ? colaboradorOtro.trim() : colaboradorSel;
     setEnviando(true);
     setAviso(null);
+
+    if (esParcial) {
+      // Enviar cada pago parcial como solicitud separada o indicar Pago X
+      let errorOcurrido = false;
+      for (let i = 0; i < pagosParciales.length; i++) {
+        const p = pagosParciales[i];
+        const numeroPago = i + 1;
+        const paqueteConPago = `${paquete} - Pago ${numeroPago}${p.monto.trim() ? ` ($${p.monto.trim()})` : ""}`;
+
+        const res = await fetchAutenticado("/api/miembro/solicitudes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            paquete: paqueteConPago,
+            lider,
+            comentario: `${comentario} [Pago parcial ${numeroPago}${p.monto.trim() ? ` - Monto: ${p.monto.trim()}` : ""}]`.trim(),
+            hash: p.hash.trim(),
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          errorOcurrido = true;
+          setAviso(data.error ?? `No se pudo enviar el Pago ${numeroPago}.`);
+          break;
+        }
+
+        if (p.archivo) {
+          const formData = new FormData();
+          formData.append("archivo", p.archivo);
+          const resArchivo = await fetchAutenticado(
+            `/api/miembro/solicitudes/${data.id}/comprobante`,
+            { method: "POST", body: formData }
+          );
+          if (!resArchivo.ok) {
+            errorOcurrido = true;
+            setAviso(`El Pago ${numeroPago} se creó, pero falló al subir el comprobante.`);
+            break;
+          }
+        }
+      }
+
+      setEnviando(false);
+      if (!errorOcurrido) {
+        setPaqueteSel("");
+        setPaqueteOtro("");
+        setColaboradorSel("");
+        setColaboradorOtro("");
+        setComentario("");
+        setPagosParciales([{ id: "1", hash: "", monto: "", archivo: null }]);
+        setAviso("¡Pagos parciales enviados correctamente! El equipo los va a revisar.");
+        cargar();
+      }
+      return;
+    }
+
     const res = await fetchAutenticado("/api/miembro/solicitudes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -168,14 +255,7 @@ export default function SolicitudesPage() {
     );
   }
 
-  const opcionesPaquete = Array.from(
-    new Set([
-      ...PACKS_REFERENCIA.map(
-        (item) => paquetes.find((p) => item.match.test(p)) ?? item.otroTexto
-      ),
-      ...paquetes.filter((p) => !PACKS_REFERENCIA.some((item) => item.match.test(p))),
-    ])
-  );
+  const opcionesPaquete = PACKS_REFERENCIA.map((item) => item.otroTexto);
 
   return (
     <main
@@ -201,12 +281,27 @@ export default function SolicitudesPage() {
             background: "#FAEEDA",
             borderRadius: 10,
             padding: "8px 12px",
-            marginBottom: 18,
+            marginBottom: 8,
           }}
         >
           ⚠ Esto no es para hacer un aporte nuevo — es para avisar de un pago que{" "}
           <strong>ya hiciste</strong> y todavía no está registrado.
         </p>
+        <div
+          style={{
+            fontSize: 12.5,
+            fontWeight: 700,
+            color: "#854F0B",
+            background: "#FAEEDA",
+            border: "1px solid rgba(133,79,11,.2)",
+            borderRadius: 12,
+            padding: "10px 14px",
+            marginBottom: 18,
+            lineHeight: 1.4,
+          }}
+        >
+          🚨 Importante: El único paquete que queda disponible para nuevas adquisiciones es el <strong>Alemán con Acceso y Activación</strong>.
+        </div>
 
         <form
           onSubmit={enviarSolicitud}
@@ -388,7 +483,6 @@ export default function SolicitudesPage() {
                   {p}
                 </option>
               ))}
-              <option value={OTRO}>Otro…</option>
             </select>
           </label>
 
@@ -399,10 +493,7 @@ export default function SolicitudesPage() {
               placeholder="Escribí el nombre del paquete"
               required
               style={{
-                padding: "10px 12px",
-                borderRadius: 10,
-                border: "1px solid rgba(23,35,61,.15)",
-                fontSize: 13,
+                display: "none",
               }}
             />
           )}
@@ -473,42 +564,191 @@ export default function SolicitudesPage() {
             />
           )}
 
-          <label style={{ fontSize: 12, fontWeight: 600, color: colors.night }}>
-            Hash o referencia de pago
-            <input
-              value={hash}
-              onChange={(e) => setHash(e.target.value)}
-              placeholder="Pegá aquí el hash o número de referencia"
-              required
-              style={{
-                display: "block",
-                width: "100%",
-                marginTop: 4,
-                padding: "10px 12px",
-                borderRadius: 10,
-                border: "1px solid rgba(23,35,61,.15)",
-                fontSize: 13,
-                boxSizing: "border-box",
-              }}
-            />
-          </label>
+          {paqueteSel && esPaqueteParcial(paqueteSel === OTRO ? paqueteOtro : paqueteSel) ? (
+            <div style={{ background: "rgba(117,104,168,.06)", padding: 12, borderRadius: 12, display: "grid", gap: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: colors.violet }}>
+                  Comprobantes de Pagos Parciales (Pack 1, 3 o 4)
+                </span>
+                <span style={{ fontSize: 11, color: "rgba(23,35,61,.6)" }}>
+                  Agregá cada pago parcial por separado
+                </span>
+              </div>
 
-          <label style={{ fontSize: 12, fontWeight: 600, color: colors.night }}>
-            Comprobante
-            <input
-              ref={archivoInputRef}
-              type="file"
-              accept="image/*,.pdf"
-              onChange={(e) => setArchivo(e.target.files?.[0] ?? null)}
-              required
-              style={{
-                display: "block",
-                width: "100%",
-                marginTop: 4,
-                fontSize: 12,
-              }}
-            />
-          </label>
+              {pagosParciales.map((pago, index) => (
+                <div
+                  key={pago.id}
+                  style={{
+                    background: "#fff",
+                    borderRadius: 10,
+                    padding: 12,
+                    border: "1px solid rgba(23,35,61,.1)",
+                    display: "grid",
+                    gap: 8,
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: colors.night }}>
+                      Pago {index + 1}
+                    </span>
+                    {pagosParciales.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPagosParciales(pagosParciales.filter((_, i) => i !== index));
+                        }}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "#A32D2D",
+                          fontSize: 11,
+                          cursor: "pointer",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Eliminar
+                      </button>
+                    )}
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                    <label style={{ fontSize: 11, fontWeight: 600, color: colors.night }}>
+                      Monto (ej: 100 USD / 400k)
+                      <input
+                        value={pago.monto}
+                        onChange={(e) => {
+                          const nuevos = [...pagosParciales];
+                          nuevos[index].monto = e.target.value;
+                          setPagosParciales(nuevos);
+                        }}
+                        placeholder="Monto parcial"
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          marginTop: 2,
+                          padding: "8px 10px",
+                          borderRadius: 8,
+                          border: "1px solid rgba(23,35,61,.15)",
+                          fontSize: 12,
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </label>
+
+                    <label style={{ fontSize: 11, fontWeight: 600, color: colors.night }}>
+                      Hash o Referencia
+                      <input
+                        value={pago.hash}
+                        onChange={(e) => {
+                          const nuevos = [...pagosParciales];
+                          nuevos[index].hash = e.target.value;
+                          setPagosParciales(nuevos);
+                        }}
+                        placeholder="Hash de transacción"
+                        required
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          marginTop: 2,
+                          padding: "8px 10px",
+                          borderRadius: 8,
+                          border: "1px solid rgba(23,35,61,.15)",
+                          fontSize: 12,
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  <label style={{ fontSize: 11, fontWeight: 600, color: colors.night }}>
+                    Comprobante de este pago
+                    <input
+                      type="file"
+                      accept="image/*,.pdf"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] ?? null;
+                        const nuevos = [...pagosParciales];
+                        nuevos[index].archivo = file;
+                        setPagosParciales(nuevos);
+                      }}
+                      required
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        marginTop: 2,
+                        fontSize: 11,
+                      }}
+                    />
+                  </label>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setPagosParciales([
+                    ...pagosParciales,
+                    { id: Date.now().toString(), hash: "", monto: "", archivo: null },
+                  ]);
+                }}
+                style={{
+                  background: "rgba(117,104,168,.12)",
+                  color: colors.violet,
+                  border: `1px dashed ${colors.violet}`,
+                  padding: "10px",
+                  borderRadius: 10,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                }}
+              >
+                <span style={{ fontSize: 16, lineHeight: 1 }}>+</span> Agregar otro comprobante (Pago parcial)
+              </button>
+            </div>
+          ) : (
+            <>
+              <label style={{ fontSize: 12, fontWeight: 600, color: colors.night }}>
+                Hash o referencia de pago
+                <input
+                  value={hash}
+                  onChange={(e) => setHash(e.target.value)}
+                  placeholder="Pegá aquí el hash o número de referencia"
+                  required
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    marginTop: 4,
+                    padding: "10px 12px",
+                    borderRadius: 10,
+                    border: "1px solid rgba(23,35,61,.15)",
+                    fontSize: 13,
+                    boxSizing: "border-box",
+                  }}
+                />
+              </label>
+
+              <label style={{ fontSize: 12, fontWeight: 600, color: colors.night }}>
+                Comprobante
+                <input
+                  ref={archivoInputRef}
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => setArchivo(e.target.files?.[0] ?? null)}
+                  required
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    marginTop: 4,
+                    fontSize: 12,
+                  }}
+                />
+              </label>
+            </>
+          )}
 
           <label style={{ fontSize: 12, fontWeight: 600, color: colors.night }}>
             Comentario (opcional)

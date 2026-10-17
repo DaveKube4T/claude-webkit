@@ -97,6 +97,10 @@ function esErrorNoEncontrado(mensaje: string | null) {
   return mensaje?.includes("No encontramos una cuenta") ?? false;
 }
 
+function esErrorSinBot(mensaje: string | null) {
+  return mensaje?.includes("no iniciaste una conversación") ?? false;
+}
+
 export default function LoginPage() {
   const [subtitleIndex, setSubtitleIndex] = useState(0);
   const [subtitleVisible, setSubtitleVisible] = useState(true);
@@ -736,6 +740,16 @@ export default function LoginPage() {
                           Unite acá
                         </Link>
                       )}
+                      {esErrorSinBot(loginError) && (
+                        <a
+                          href="https://t.me/VerificacionesResonanciaBot"
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ color: colors.violet, fontWeight: 700 }}
+                        >
+                          Abrir bot →
+                        </a>
+                      )}
                     </p>
                   )}
 
@@ -856,7 +870,7 @@ export default function LoginPage() {
                   >
                     {canalCodigo === "telegram"
                       ? "Elegí tu nueva contraseña"
-                      : "Elegí una contraseña (opcional por ahora)"}
+                      : "Creá una contraseña para futuros ingresos (opcional)"}
                   </label>
                   <input
                     type="password"
@@ -936,7 +950,7 @@ export default function LoginPage() {
                       ? "Verificando…"
                       : nuevaPassword
                       ? "Guardar y entrar"
-                      : "Entrar sin elegir contraseña"}
+                      : "Entrar con el código recibido"}
                   </button>
 
                   <div
@@ -979,7 +993,7 @@ export default function LoginPage() {
                 </form>
               )}
 
-              <div style={{ textAlign: "center", marginTop: 12, display: "grid", gap: 5 }}>
+              <div style={{ textAlign: "center", marginTop: 12, display: "grid", gap: 16 }}>
                 <a
                   href="https://t.me/VerificacionesResonanciaBot"
                   target="_blank"

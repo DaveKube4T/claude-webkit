@@ -4,8 +4,7 @@ import { requireSession } from "@/lib/require-session";
 import { anthropic } from "@/lib/anthropic";
 import { obtenerSeccion } from "@/lib/plan-de-vida-secciones";
 import { verificarYRegistrarUsoIA } from "@/lib/limite-ia";
-import Anthropic from "@anthropic-ai/sdk";
-
+import type { MessageParam } from "@/lib/anthropic";   
 interface Turno {
   rol: "user" | "assistant";
   texto: string;
@@ -75,8 +74,7 @@ export async function POST(req: NextRequest) {
     en: new Date().toISOString(),
   };
 
-  const mensajesParaClaude: Anthropic.MessageParam[] = [
-    ...historialPrevio.map((t) => ({
+const mensajesParaClaude: MessageParam[] = [       ...historialPrevio.map((t) => ({
       role: t.rol,
       content: t.texto,
     })),

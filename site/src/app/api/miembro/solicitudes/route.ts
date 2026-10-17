@@ -61,9 +61,12 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  await notificarEquipo(
-    `✨ Nueva solicitud de ${persona?.nombre ?? "un miembro"}: ${paquete}.`
-  ).catch(() => null);
+  const esAleman = /alem[aá]n/i.test(paquete);
+  const textoNotif = esAleman
+    ? `🚨 ¡NUEVA SOLICITUD - PAQUETE ALEMÁN!\n👤 Miembro: ${persona?.nombre ?? "Desconeado"}\n💬 Telegram: @${persona?.telegram ?? "N/D"}\n\n👉 ¡Recordar admitir en los grupos privados de Telegram y Signal!`
+    : `✨ Nueva solicitud de ${persona?.nombre ?? "un miembro"}: ${paquete}.`;
+
+  await notificarEquipo(textoNotif).catch(() => null);
 
   return NextResponse.json({ ok: true, id: nueva.id });
 }
