@@ -74,6 +74,12 @@ export async function POST(req: NextRequest) {
       removerTeclado: true,
     }).catch(() => null);
 
+    await enviarMensajeTelegram(
+      String(chatId),
+      "Elegí una opción para continuar:",
+      { conMenu: true }
+    ).catch(() => null);
+
     return NextResponse.json({ ok: true });
   }
 
