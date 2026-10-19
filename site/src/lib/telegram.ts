@@ -46,13 +46,10 @@ export async function enviarMensajeTelegram(
     ? { remove_keyboard: true }
     : filas
     ? {
-        inline_keyboard: filas.map((fila) =>
-          fila.map((b) =>
-            b.url
-              ? { text: b.texto, url: b.url }
-              : { text: b.texto, callback_data: b.data ?? "" }
-          )
+        reply_keyboard: filas.map((fila) =>
+          fila.map((b) => ({ text: b.texto }))
         ),
+        resize_keyboard: true,
       }
     : undefined;
 
