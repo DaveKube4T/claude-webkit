@@ -62,12 +62,10 @@ export async function POST(req: NextRequest) {
 
     // 2. Mensaje de bienvenida con directiva de comunicación y botones
     const bienvenida =
-      `¡Hola ${persona.nombre}! 👋 Te damos la bienvenida al bot oficial de Resonancia.\n\n` +
+      `¡Hola ${persona.nombre}! 👋\nTe damos la bienvenida al bot oficial de Resonancia.\n\n` +
       `Aquí recibirás las actualizaciones de verificación de tus paquetes y avisos del equipo. Podés ingresar al Portal en cualquier momento tocando el botón de abajo.\n\n` +
-      `⚠️ CANAL DE COMUNICACIÓN IMPORTANTE:\n` +
-      `Por favor, mantengamos todas las consultas y gestiones ÚNICAMENTE a través de este Bot o dentro del Portal oficial.\n` +
-      `Te pedimos NO enviar mensajes privados a las colaboradoras ni al equipo; de esta manera tus consultas quedan registradas en el sistema y podemos darte una respuesta mucho más rápida, clara y ordenada.\n\n` +
-      `Elegí una opción para continuar:`;
+      `⚠️ CANAL DE COMUNICACIÓN IMPORTANTE: mantengamos todas las consultas y gestiones a través de este Bot o dentro del Portal oficial. De esta manera tus consultas quedan registradas en el sistema y podemos darte una respuesta mucho más rápida, clara y ordenada.\n\n` +
+      `Gracias! 🙏`;
 
     await enviarMensajeTelegram(String(chatId), bienvenida, {
       conMenu: true,
