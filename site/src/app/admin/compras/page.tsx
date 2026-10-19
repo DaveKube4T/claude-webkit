@@ -553,6 +553,8 @@ function PanelDetalle({
     });
     setEnviandoMensaje(false);
     if (res.ok) {
+      const data = await res.json().catch(() => null);
+      if (data?.aviso) setAviso(data.aviso);
       setNuevoMensaje("");
       cargar();
     } else {

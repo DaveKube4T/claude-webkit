@@ -33,12 +33,22 @@ export async function POST(
     .eq("id", sesion.usuarioId)
     .maybeSingle();
 
+  // Intentamos notificar por Telegram. Si la persona tiene chat_id activado,
+  // se le envía en el momento. Si no, notificarPersona devuelve false y el
+  // mensaje queda registrado con entregado_telegram=false para entregárselo
+  // en cuanto escriba /start al bot.
+  const entregadoTelegram = await notificarPersona(
+    compra.persona_id,
+    `🪶 Nuevo mensaje del equipo sobre tu compra "${compra.paquete}":\n\n${texto}`
+  ).catch(() => false);
+
   const mensajes = Array.isArray(compra.mensajes_admin) ? compra.mensajes_admin : [];
   mensajes.push({
     autor_nombre: usuarioFila?.nombre ?? "Equipo",
     rol: sesion.rol,
     texto,
     creado_en: new Date().toISOString(),
+    entregado_telegram: entregadoTelegram,
   });
 
   const { error } = await supabaseAdmin
@@ -56,10 +66,11 @@ export async function POST(
     detalle: texto,
   });
 
-  notificarPersona(
-    compra.persona_id,
-    `🪶 Nuevo mensaje del equipo sobre tu compra "${compra.paquete}":\n${texto}`
-  ).catch(() => null);
-
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({
+    ok: true,
+    entregado_telegram: entregadoTelegram,
+    aviso: entregadoTelegram
+      ? undefined
+      : "El mensaje quedó guardado en el portal. Como el miembro todavía no activó el bot (/start), se le enviará a su Telegram automáticamente cuando lo inicie.",
+  });
 }

@@ -42,7 +42,7 @@ export async function POST(
     );
   }
 
-  const url = `https://resonancia-portal.vercel.app/miembro/compra/${id}`;
+  const url = `https://resonanciaverificaciones.com/miembro/compra/${id}`;
   const texto = `Hola ${persona.nombre} 👋 Somos el equipo de Resonancia. Necesitamos que nos compartas el comprobante de tu pago para "${compra.paquete}". Podés subirlo acá: ${url}`;
 
   try {
