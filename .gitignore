@@ -39,6 +39,10 @@ playwright-cli-screenshots/
 *.png
 !docs/**/*.png
 
+# Imagenes del portal (servidas por Next.js desde public/) - deben versionarse
+# para que el deploy por git las incluya; el deploy por CLI las sube igual.
+!site/public/**/*.png
+
 # Written by the improve-animations / prototype skills
 plans/
 prototypes/
