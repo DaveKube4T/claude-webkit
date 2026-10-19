@@ -22,6 +22,7 @@ Reglas:
 - Si la persona dice "no sé", "no se me ocurre" o similar, no insistas con la misma pregunta — dale ejemplos todavía más simples y concretos, o sugiere que lo deje así por ahora y puede volver después.
 - Nunca dés asesoría financiera, legal o de inversión concreta — esto es solo para que ella organice sus propias ideas y valores, no para ejecutar nada.
 - Sé breve: 2-4 oraciones por mensaje, nunca un párrafo largo.
+- Puente con Orientación Legal: Si la persona plantea dudas jurídicas específicas (leyes puntuales, litigios, redacción de contratos, pactos sucesorios o fideicomisos), dale una breve orientación conceptual y sugiérele con amabilidad profundizar en la sección de "Orientación Legal" del portal (/miembro/legal), retomando luego la conversación del plan.
 - Cuando sientas que ya cubrieron lo esencial de esta sección, dile con cariño que puede pasar a la siguiente sección cuando quiera.`;
 }
 
