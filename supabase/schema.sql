@@ -191,6 +191,28 @@ create table if not exists mensajes_pendientes_registro (
 create index if not exists idx_mensajes_pendientes_registro_telegram on mensajes_pendientes_registro(telegram);
 
 -- ============================================================
+-- mensajes_pendientes_registro_compra: mensajes guardados vía admin
+-- sobre compras del miembro mientras todavía no activó el bot
+-- (/start). Se entregará cuando el miembro active el bot.
+-- ============================================================
+create table if not exists mensajes_pendientes_registro_compra (
+  id uuid primary key default gen_random_uuid(),
+  persona_telegram text not null,
+  persona_id text references personas(id) on delete set null,
+  compra_id uuid references compras(id) on delete set null,
+  compra_paquete text,
+  mensaje jsonb not null default '[]',
+  estado text not null default 'pendiente', -- pendiente|enviado
+  creado_en timestamptz not null default now(),
+  actualizado_en timestamptz not null default now()
+);
+
+create index if not exists idx_mensajes_pendientes_registro_compra_persona_telegram on mensajes_pendientes_registro_compra(persona_telegram);
+create index if not exists idx_mensajes_pendientes_registro_compra_persona_id on mensajes_pendientes_registro_compra(persona_id);
+create index if not exists idx_mensajes_pendientes_registro_compra_compra_id on mensajes_pendientes_registro_compra(compra_id);
+create index if not exists idx_mensajes_pendientes_registro_compra_estado on mensajes_pendientes_registro_compra(estado);
+
+-- ============================================================
 -- sesiones: tokens de sesión (miembro y admin)
 -- ============================================================
 create table if not exists sesiones (

@@ -8,11 +8,13 @@ function botToken() {
   return token;
 }
 
+export type BotonTelegram = { texto: string; data?: string; url?: string };
+
 // Menú principal como botones INLINE (pegados debajo del mensaje) — a
 // diferencia del teclado de respuesta clásico, estos se ven siempre sin que
-// el usuario tenga que tocar ningún ícono extra. callback_data identifica
-// cada opción cuando Telegram nos avisa el tap.
-export const MENU_PRINCIPAL: { texto: string; data: string }[][] = [
+// el usuario tenga que tocar ningún ícono extra.
+export const MENU_PRINCIPAL: BotonTelegram[][] = [
+  [{ texto: "🌐 Abrir Portal de Verificación", url: "https://resonanciaverificaciones.com" }],
   [{ texto: "⚛️ Mis paquetes", data: "menu_paquetes" }],
   [{ texto: "🗳️ Mis solicitudes", data: "menu_solicitudes" }],
   [{ texto: "📍 Reportar un error", data: "menu_reportar" }],
@@ -33,17 +35,28 @@ export async function enviarMensajeTelegram(
   texto: string,
   opciones?: {
     conMenu?: boolean;
-    inlineKeyboard?: { texto: string; data: string }[][];
+    inlineKeyboard?: BotonTelegram[][];
     removerTeclado?: boolean;
     markdown?: boolean;
+    html?: boolean;
   }
 ) {
   const filas = opciones?.conMenu ? MENU_PRINCIPAL : opciones?.inlineKeyboard;
   const replyMarkup = opciones?.removerTeclado
     ? { remove_keyboard: true }
     : filas
-    ? { inline_keyboard: filas.map((fila) => fila.map((b) => ({ text: b.texto, callback_data: b.data }))) }
+    ? {
+        inline_keyboard: filas.map((fila) =>
+          fila.map((b) =>
+            b.url
+              ? { text: b.texto, url: b.url }
+              : { text: b.texto, callback_data: b.data ?? "" }
+          )
+        ),
+      }
     : undefined;
+
+  const parseMode = opciones?.html ? "HTML" : opciones?.markdown ? "Markdown" : undefined;
 
   const res = await fetch(`${TELEGRAM_API}/bot${botToken()}/sendMessage`, {
     method: "POST",
@@ -52,7 +65,7 @@ export async function enviarMensajeTelegram(
       chat_id: chatId,
       text: texto,
       reply_markup: replyMarkup,
-      parse_mode: opciones?.markdown ? "Markdown" : undefined,
+      parse_mode: parseMode,
     }),
   });
 
@@ -78,19 +91,22 @@ export async function responderCallbackQuery(callbackQueryId: string) {
 // Notificación "best effort": si la persona no tiene chat_id todavía, o si el
 // envío falla por cualquier motivo, no rompe la acción principal (aprobar,
 // rechazar, etc.) — solo registra el intento en consola.
-export async function notificarPersona(personaId: string, texto: string) {
+// Devuelve true si se envió con éxito, false si no.
+export async function notificarPersona(personaId: string, texto: string): Promise<boolean> {
   const { data: persona } = await supabaseAdmin
     .from("personas")
     .select("telegram_chat_id")
     .eq("id", personaId)
     .maybeSingle();
 
-  if (!persona?.telegram_chat_id) return;
+  if (!persona?.telegram_chat_id) return false;
 
   try {
     await enviarMensajeTelegram(persona.telegram_chat_id, texto);
+    return true;
   } catch (err) {
     console.error("No se pudo notificar por Telegram a", personaId, err);
+    return false;
   }
 }
 

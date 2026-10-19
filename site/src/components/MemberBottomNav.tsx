@@ -10,10 +10,11 @@ const colors = {
 
 const ITEMS = [
   { href: "/miembro/perfil", label: "Perfil", icon: "👤" },
-  { href: "/miembro", label: "Mis Compras", icon: "🛍️" },
+  { href: "/miemro", label: "Mis Compras", icon: "🛍️" },
   { href: "/miembro/solicitudes", label: "Solicitudes", icon: "📋" },
   { href: "/miembro/plan-de-vida", label: "Plan de Vida", icon: "🧭" },
   { href: "/miembro/perfil-financiero", label: "P. Financiero", icon: "💰" },
+  { href: "/miembro/legal", label: "Legal", icon: "⚖️" },
   { href: "/miembro/contacto", label: "Ayuda", icon: "💬" },
 ];
 
