@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
   }
 
   const nombre = String(formData.get("nombre") ?? "").trim();
+  const mail = String(formData.get("mail") ?? "").trim().toLowerCase();
   const telegram = String(formData.get("telegram") ?? "").trim().replace(/^@/, "");
   const password = String(formData.get("password") ?? "");
   const paquete = String(formData.get("paquete") ?? "").trim();
@@ -67,6 +68,7 @@ export async function POST(req: NextRequest) {
   const { error: errorPersona } = await supabaseAdmin.from("personas").insert({
     id: personaId,
     nombre,
+    mail: mail || null,
     telegram,
     password_hash: passwordHash,
   });

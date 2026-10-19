@@ -25,6 +25,7 @@ function imagenDePaquete(paquete: string): string | null {
 export default function VidrieraPage() {
   const router = useRouter();
   const [nombre, setNombre] = useState("");
+  const [mail, setMail] = useState("");
   const [telegram, setTelegram] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
@@ -45,8 +46,8 @@ export default function VidrieraPage() {
     const paquete = paqueteSel === OTRO ? paqueteOtro.trim() : paqueteSel;
     const lider = liderSel === OTRO ? liderOtro.trim() : liderSel;
 
-    if (!nombre.trim() || !telegram.trim() || !password || !paquete) {
-      setError("Completá nombre, Telegram, contraseña y paquete.");
+    if (!nombre.trim() || !mail.trim() || !telegram.trim() || !password || !paquete) {
+      setError("Completá nombre, correo electrónico, Telegram, contraseña y paquete.");
       return;
     }
     if (password !== password2) {
@@ -74,6 +75,7 @@ export default function VidrieraPage() {
 
     const formData = new FormData();
     formData.set("nombre", nombre.trim());
+    formData.set("mail", mail.trim().toLowerCase());
     formData.set("telegram", telegram.trim());
     formData.set("password", password);
     formData.set("paquete", paquete);
@@ -145,6 +147,18 @@ export default function VidrieraPage() {
             <input
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
+              required
+              style={campoEstilo}
+            />
+          </label>
+
+          <label style={{ fontSize: 12, fontWeight: 600 }}>
+            Correo electrónico (para recibir códigos y avisos)
+            <input
+              type="email"
+              value={mail}
+              onChange={(e) => setMail(e.target.value)}
+              placeholder="tu@email.com"
               required
               style={campoEstilo}
             />

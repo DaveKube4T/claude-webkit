@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
   const { data, error } = await supabaseAdmin
     .from("personas")
     .select(
-      "telegram, " + CAMPOS_EDITABLES.join(", ")
+      "telegram, telegram_chat_id, " + CAMPOS_EDITABLES.join(", ")
     )
     .eq("id", sesion.personaId)
     .maybeSingle();
@@ -40,7 +40,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Persona no encontrada." }, { status: 404 });
   }
 
-  return NextResponse.json({ persona: data });
+  const fila = data as unknown as Record<string, unknown>;
+  const { telegram_chat_id, ...resto } = fila;
+  return NextResponse.json({
+    persona: {
+      ...resto,
+      tiene_bot: Boolean(telegram_chat_id),
+    },
+  });
 }
 
 export async function PATCH(req: NextRequest) {

@@ -79,11 +79,32 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (esRecuperacion) {
+  // Priorizar envío por email si la persona tiene mail registrado
+  if (persona.mail) {
+    try {
+      await enviarCodigoLogin(persona.mail as string, codigo);
+    } catch {
+      return NextResponse.json(
+        {
+          error:
+            "No pudimos enviar el código por email. Contactate con el equipo.",
+        },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json({
+      ok: true,
+      canal: "email" as const,
+      mailOculto: ocultarEmail(persona.mail as string),
+    });
+  }
+
+  // Si no tiene mail, intentar Telegram como alternativa
+  if (persona.telegram_chat_id) {
     try {
       await enviarMensajeTelegram(
         persona.telegram_chat_id as string,
-        `🔑 Tu código para recuperar el acceso al Portal de Verificación es: ${codigo}\n\nVale por 10 minutos. Si no lo pediste vos, ignorá este mensaje.`
+        `🔑 Tu código para acceder al Portal de Verificación es: ${codigo}\n\nVale por 10 minutos. Si no lo pediste vos, ignorá este mensaje.`
       );
     } catch {
       return NextResponse.json(
@@ -97,21 +118,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, canal: "telegram" as const });
   }
 
-  try {
-    await enviarCodigoLogin(persona.mail as string, codigo);
-  } catch {
-    return NextResponse.json(
-      {
-        error:
-          "No pudimos enviar el código por email. Contactate con el equipo.",
-      },
-      { status: 500 }
-    );
-  }
-
-  return NextResponse.json({
-    ok: true,
-    canal: "email" as const,
-    mailOculto: ocultarEmail(persona.mail as string),
-  });
+  return NextResponse.json(
+    {
+      error:
+        "No tenés un email ni Telegram configurado para recibir el código. Contactate con el equipo.",
+    },
+    { status: 400 }
+  );
 }

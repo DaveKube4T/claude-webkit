@@ -8,6 +8,7 @@ const colors = { night: "#17233D", violet: "#7568A8" };
 
 interface Persona {
   telegram: string;
+  tiene_bot?: boolean;
   nombre: string;
   apellidos: string | null;
   documento: string | null;
@@ -26,7 +27,9 @@ interface Persona {
   signal: string | null;
 }
 
-const CAMPOS: { key: keyof Persona; label: string }[] = [
+type CampoEditable = Exclude<keyof Persona, "telegram" | "tiene_bot">;
+
+const CAMPOS: { key: CampoEditable; label: string }[] = [
   { key: "nombre", label: "Nombre" },
   { key: "apellidos", label: "Apellidos" },
   { key: "signal", label: "Usuario de Signal" },
@@ -82,8 +85,9 @@ export default function PerfilPage() {
     if (!persona) return;
     setGuardando(true);
     setAviso(null);
-    const { telegram: _telegram, ...cambios } = persona;
+    const { telegram: _telegram, tiene_bot: _tiene_bot, ...cambios } = persona;
     void _telegram;
+    void _tiene_bot;
     const res = await fetchAutenticado("/api/miembro/perfil", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -171,6 +175,87 @@ export default function PerfilPage() {
           {faltanCampos > 0 ? `⚠ Completitud: ${completados}/${totalCampos}` : `✓ Completitud: ${totalCampos}/${totalCampos}`}
         </div>
 
+        {persona.tiene_bot ? (
+          <div
+            style={{
+              background: "#EAF3DE",
+              border: "1px solid #C0DD9D",
+              borderRadius: 14,
+              padding: "10px 14px",
+              marginBottom: 16,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 8,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 16 }}>✅</span>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#27500A" }}>
+                  Bot de Telegram vinculado
+                </div>
+                <div style={{ fontSize: 11, color: "#3B6D11" }}>
+                  Recibís avisos de compras y respuestas del equipo en tu Telegram.
+                </div>
+              </div>
+            </div>
+            <a
+              href="https://t.me/VerificacionesResonanciaBot"
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: "#27500A",
+                textDecoration: "underline",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Abrir bot
+            </a>
+          </div>
+        ) : (
+          <div
+            style={{
+              background: "linear-gradient(135deg, rgba(117,104,168,.12), rgba(38,58,99,.08))",
+              border: "1px solid rgba(117,104,168,.3)",
+              borderRadius: 14,
+              padding: "12px 14px",
+              marginBottom: 16,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <span style={{ fontSize: 18 }}>🤖</span>
+              <strong style={{ fontSize: 13, color: colors.night }}>
+                Activá las notificaciones en Telegram
+              </strong>
+            </div>
+            <p style={{ fontSize: 12, color: "rgba(23,35,61,.75)", margin: "0 0 10px", lineHeight: 1.4 }}>
+              Para recibir avisos cuando se verifiquen tus paquetes o cuando el equipo te responda consultas, enlazá tu cuenta con nuestro Bot oficial:
+            </p>
+            <a
+              href="https://t.me/VerificacionesResonanciaBot"
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                background: "#2AABEE",
+                color: "#fff",
+                padding: "8px 14px",
+                borderRadius: 10,
+                fontSize: 12,
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              <span>👉 Abrir @VerificacionesResonanciaBot y tocar "Iniciar"</span>
+            </a>
+          </div>
+        )}
+
         <form
           onSubmit={guardar}
           style={{
@@ -201,11 +286,31 @@ export default function PerfilPage() {
           </label>
           <label style={{ fontSize: 12, fontWeight: 600 }}>
             Usuario de Telegram
-            <input
-              value={`@${persona.telegram}`}
-              disabled
-              style={{ ...inputStyle(), opacity: 0.6, cursor: "not-allowed" }}
-            />
+            <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
+              <input
+                value={`@${persona.telegram}`}
+                disabled
+                style={{ ...inputStyle(), marginTop: 0, opacity: 0.6, cursor: "not-allowed", flex: 1 }}
+              />
+              <a
+                href="https://t.me/VerificacionesResonanciaBot"
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: persona.tiene_bot ? "#3B6D11" : "#2AABEE",
+                  textDecoration: "none",
+                  whiteSpace: "nowrap",
+                  padding: "8px 12px",
+                  borderRadius: 8,
+                  border: persona.tiene_bot ? "1px solid #C0DD9D" : "1px solid #2AABEE",
+                  background: persona.tiene_bot ? "#EAF3DE" : "rgba(42,171,238,.08)",
+                }}
+              >
+                {persona.tiene_bot ? "✓ Vinculado" : "Conectar bot"}
+              </a>
+            </div>
           </label>
 
           {CAMPOS.filter((c) => c.key !== "nombre" && c.key !== "apellidos").map((c) => (
