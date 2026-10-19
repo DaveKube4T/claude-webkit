@@ -261,6 +261,11 @@ async function manejarCallbackQuery(callbackQuery: {
     return NextResponse.json({ ok: true });
   }
 
+  if (clave === "portal_verificacion") {
+    await enviarMensajeTelegram(String(chatId), "🌐 Portal: https://resonanciaverificaciones.com", { conMenu: true }).catch(() => null);
+    return NextResponse.json({ ok: true });
+  }
+
   if (clave === "menu_paquetes") {
     await responderMisPaquetes(String(chatId), persona.id);
     return NextResponse.json({ ok: true });

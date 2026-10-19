@@ -14,7 +14,7 @@ export type BotonTelegram = { texto: string; data?: string; url?: string };
 // diferencia del teclado de respuesta clásico, estos se ven siempre sin que
 // el usuario tenga que tocar ningún ícono extra.
 export const MENU_PRINCIPAL: BotonTelegram[][] = [
-  [{ texto: "🌐 Abrir Portal de Verificación", url: "https://resonanciaverificaciones.com" }],
+  [{ texto: "🌐 Abrir Portal", data: "portal_verificacion" }],
   [{ texto: "⚛️ Mis paquetes", data: "menu_paquetes" }],
   [{ texto: "🗳️ Mis solicitudes", data: "menu_solicitudes" }],
   [{ texto: "📍 Reportar un error", data: "menu_reportar" }],
