@@ -22,6 +22,30 @@ function imagenDePaquete(paquete: string): string | null {
   return `/images/packs/pack-${match[1]}.png`;
 }
 
+function EyeIcon({ off }: { off: boolean }) {
+  const common = {
+    width: 18,
+    height: 18,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.6,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+  return off ? (
+    <svg {...common}>
+      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+      <line x1="1" y1="1" x2="23" y2="23" />
+    </svg>
+  ) : (
+    <svg {...common}>
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
 export default function VidrieraPage() {
   const router = useRouter();
   const [nombre, setNombre] = useState("");
@@ -29,6 +53,7 @@ export default function VidrieraPage() {
   const [telegram, setTelegram] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [paqueteSel, setPaqueteSel] = useState("");
   const [paqueteOtro, setPaqueteOtro] = useState("");
   const [liderSel, setLiderSel] = useState("");
@@ -193,23 +218,67 @@ export default function VidrieraPage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             <label style={{ fontSize: 12, fontWeight: 600 }}>
               Contraseña
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                style={campoEstilo}
-              />
+              <div style={{ position: "relative", marginTop: 4 }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  style={{ ...campoEstilo, paddingRight: 38 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: 0,
+                    height: "100%",
+                    width: 38,
+                    display: "grid",
+                    placeItems: "center",
+                    border: 0,
+                    background: "transparent",
+                    color: "rgba(23,35,61,.5)",
+                    cursor: "pointer",
+                  }}
+                >
+                  <EyeIcon off={showPassword} />
+                </button>
+              </div>
             </label>
             <label style={{ fontSize: 12, fontWeight: 600 }}>
               Repetir contraseña
-              <input
-                type="password"
-                value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
-                required
-                style={campoEstilo}
-              />
+              <div style={{ position: "relative", marginTop: 4 }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password2}
+                  onChange={(e) => setPassword2(e.target.value)}
+                  required
+                  style={{ ...campoEstilo, paddingRight: 38 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: 0,
+                    height: "100%",
+                    width: 38,
+                    display: "grid",
+                    placeItems: "center",
+                    border: 0,
+                    background: "transparent",
+                    color: "rgba(23,35,61,.5)",
+                    cursor: "pointer",
+                  }}
+                >
+                  <EyeIcon off={showPassword} />
+                </button>
+              </div>
             </label>
           </div>
 

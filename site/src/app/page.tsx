@@ -872,39 +872,18 @@ export default function LoginPage() {
                       ? "Elegí tu nueva contraseña"
                       : "Creá una contraseña para futuros ingresos (opcional)"}
                   </label>
-                  <input
-                    type="password"
-                    placeholder="••••••••"
-                    value={nuevaPassword}
-                    onChange={(e) => setNuevaPassword(e.target.value)}
-                    required={canalCodigo === "telegram"}
-                    autoComplete="new-password"
-                    style={{
-                      width: "100%",
-                      height: 38,
-                      padding: "0 15px",
-                      boxSizing: "border-box",
-                      border: "1px solid rgba(38,58,99,.12)",
-                      borderRadius: 14,
-                      outline: "none",
-                      background: "rgba(255,255,255,.65)",
-                      color: colors.night,
-                      fontSize: 13,
-                    }}
-                  />
-
-                  {nuevaPassword && (
+                  <div style={{ position: "relative" }}>
                     <input
-                      type="password"
-                      placeholder="Repetí la contraseña"
-                      value={confirmarPassword}
-                      onChange={(e) => setConfirmarPassword(e.target.value)}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={nuevaPassword}
+                      onChange={(e) => setNuevaPassword(e.target.value)}
+                      required={canalCodigo === "telegram"}
                       autoComplete="new-password"
                       style={{
                         width: "100%",
                         height: 38,
-                        marginTop: 7,
-                        padding: "0 15px",
+                        padding: "0 42px 0 15px",
                         boxSizing: "border-box",
                         border: "1px solid rgba(38,58,99,.12)",
                         borderRadius: 14,
@@ -914,6 +893,70 @@ export default function LoginPage() {
                         fontSize: 13,
                       }}
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                      style={{
+                        position: "absolute",
+                        right: 0,
+                        top: 0,
+                        height: 38,
+                        width: 40,
+                        display: "grid",
+                        placeItems: "center",
+                        border: 0,
+                        background: "transparent",
+                        color: "rgba(23,35,61,.45)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <EyeIcon off={showPassword} />
+                    </button>
+                  </div>
+
+                  {nuevaPassword && (
+                    <div style={{ position: "relative", marginTop: 7 }}>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Repetí la contraseña"
+                        value={confirmarPassword}
+                        onChange={(e) => setConfirmarPassword(e.target.value)}
+                        autoComplete="new-password"
+                        style={{
+                          width: "100%",
+                          height: 38,
+                          padding: "0 42px 0 15px",
+                          boxSizing: "border-box",
+                          border: "1px solid rgba(38,58,99,.12)",
+                          borderRadius: 14,
+                          outline: "none",
+                          background: "rgba(255,255,255,.65)",
+                          color: colors.night,
+                          fontSize: 13,
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((v) => !v)}
+                        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                        style={{
+                          position: "absolute",
+                          right: 0,
+                          top: 0,
+                          height: 38,
+                          width: 40,
+                          display: "grid",
+                          placeItems: "center",
+                          border: 0,
+                          background: "transparent",
+                          color: "rgba(23,35,61,.45)",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <EyeIcon off={showPassword} />
+                      </button>
+                    </div>
                   )}
 
                   {loginError && (
