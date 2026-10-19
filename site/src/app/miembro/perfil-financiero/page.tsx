@@ -216,6 +216,33 @@ export default function PerfilFinancieroPage() {
               minHeight: 340,
             }}
           >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, borderBottom: "1px solid rgba(23,35,61,.08)", paddingBottom: 8 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: colors.night }}>Sección {seccion.numero} · {seccion.titulo}</span>
+            {historial.length > 0 && (
+              <button
+                onClick={async () => {
+                  if (!confirm("¿Deseas reiniciar esta sección y borrar el historial y resumen actual?")) return;
+                  const res = await fetchAutenticado(`/api/miembro/perfil-financiero/chat?seccion=${seccion.key}`, {
+                    method: "DELETE",
+                  });
+                  if (res.ok) {
+                    const data = await res.json();
+                    setPerfil((p) => ({ ...(p ?? {}), [seccion.key]: data.historial }));
+                  }
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#B3261E",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Reiniciar sección ↺
+              </button>
+            )}
+          </div>
           <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10, marginBottom: 10 }}>
             {historial.length === 0 && (
               <p style={{ fontSize: 13, color: "rgba(23,35,61,.6)", lineHeight: 1.5 }}>

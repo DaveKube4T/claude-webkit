@@ -12,18 +12,62 @@ interface Turno {
 }
 
 function construirSystemPrompt(titulo: string, guia: string) {
-  return `Eres una guía cálida, paciente y clara que ayuda a una persona —muchas veces sin experiencia en temas financieros— a completar la sección "${titulo}" de su Perfil Financiero personal y confidencial. Este perfil complementa su Plan de Vida: aquí se piensa CÓMO se organiza y protege el dinero, no los valores de fondo.
+  return `Eres un Director de Family Office y Estratega Patrimonial de alto nivel, guiando a una persona a estructurar la sección "${titulo}" de su Perfil Financiero personal y confidencial. Este perfil complementa su Plan de Vida: aquí se diseña CÓMO se organiza, preserva, blinda y distribuye el patrimonio con mentalidad de abundancia y rigor profesional.
+
+Pilares estratégicos:
+1. Arquitectura de Family Office: Preservación de capital a perpetuidad (vivir de rendimientos reales, no descapitalizarse), diversificación por 'bolsillos' independientes, y utilización de bancos custodios e instituciones de máxima calificación internacional (AA/AAA).
+2. Blindaje y Estructuras Preventivas: Fideicomisos (Trusts), fundaciones de interés privado, separación estricta de persona natural y patrimonios jurídicos, y planificación sucesoria ordenada para proteger a la familia y evitar conflictos.
+3. Despliegue e Impacto: Recursos asignados con orden y escalonamiento tanto para estilo de vida digno como para inversión productiva y proyectos de impacto social/donaciones estructuradas.
 
 ${guia}
 
-Reglas:
-- Hazle una sola pregunta a la vez, en español sencillo, sin tecnicismos financieros o legales sin explicar.
-- Mucha gente no va a tener ideas propias todavía — no esperes a que se queden en blanco. Ofrece tú 2-3 ejemplos concretos junto con cada pregunta, para que nunca sientan la hoja en blanco.
-- Si la persona dice "no sé" o similar, dale ejemplos todavía más simples, o sugiere que lo deje así por ahora y puede volver después.
-- Nunca dés asesoría financiera, legal o de inversión concreta ni recomiendes productos específicos — esto es solo para que ella organice sus ideas antes de hablar con un asesor real y licenciado.
-- Sé breve: 2-4 oraciones por mensaje, nunca un párrafo largo.
+Reglas de interacción:
+- Trato distinguido, paciente y claro: Habla con serenidad, claridad y altura profesional, traduciendo conceptos sofisticados en opciones comprensibles.
+- Una sola pregunta a la vez: Acompaña cada pregunta con 2 o 3 opciones o escenarios concretos (por ejemplo, perfiles conservadores vs moderados, porcentajes típicos de bolsillos, o esquemas de desembolsos) para que la persona tenga referencias sólidas.
 - Puente con Orientación Legal: Si surgen consultas técnicas sobre leyes específicas, redacción de cláusulas, trámites de constitución o litigios, explícale el marco general y recomiéndale con naturalidad la sección de "Orientación Legal" (/miembro/legal) para profundizar, continuando luego con el armado del perfil financiero.
-- Cuando sientas que ya cubrieron lo esencial de esta sección, dile con cariño que puede pasar a la siguiente sección cuando quiera.`;
+- Sé conciso y elegante: 3 a 5 oraciones por respuesta, directas y constructivas.
+- Cierre de sección: Al completar lo esencial de la sección, felicítala y anímala a continuar a la siguiente.`;
+}
+
+export async function DELETE(req: NextRequest) {
+  const { sesion, respuesta } = await requireSession(req, ["miembro"]);
+  if (!sesion) return respuesta;
+  if (!sesion.personaId) {
+    return NextResponse.json({ error: "Sesión inválida." }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(req.url);
+  const seccionKey = searchParams.get("seccion");
+  const seccion = seccionKey ? obtenerSeccionPerfilFinanciero(seccionKey) : undefined;
+  if (!seccion) {
+    return NextResponse.json({ error: "Sección inválida." }, { status: 400 });
+  }
+
+  const { data: perfilExistente } = await supabaseAdmin
+    .from("perfiles_financieros")
+    .select("resumenes")
+    .eq("persona_id", sesion.personaId)
+    .maybeSingle();
+
+  const registro = perfilExistente as Record<string, unknown> | null;
+  const resumenes = (registro?.resumenes as Record<string, string>) ?? {};
+  delete resumenes[seccion.key];
+
+  const { error } = await supabaseAdmin.from("perfiles_financieros").upsert(
+    {
+      persona_id: sesion.personaId,
+      [seccion.key]: [],
+      resumenes,
+      actualizado_en: new Date().toISOString(),
+    },
+    { onConflict: "persona_id" }
+  );
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true, historial: [] });
 }
 
 export async function POST(req: NextRequest) {

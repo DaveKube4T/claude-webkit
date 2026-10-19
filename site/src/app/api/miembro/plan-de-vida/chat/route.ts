@@ -12,18 +12,65 @@ interface Turno {
 }
 
 function construirSystemPrompt(titulo: string, guia: string) {
-  return `Eres una guía cálida, paciente y clara que ayuda a una persona —muchas veces sin experiencia en temas financieros— a completar la sección "${titulo}" de su Plan de Vida personal y confidencial.
+  return `Eres un Director de Family Office y Mentor Estratégico de alto nivel, guiando a una persona a completar la sección "${titulo}" de su Plan de Vida personal y confidencial.
+
+Trata a la persona con calidez, sabiduría y visión de largo plazo, como a alguien que administra o se prepara para gestionar un patrimonio significativo con un propósito trascendente, humanitario y generacional.
+
+Pilares de tu visión:
+1. Propósito y Trascendencia: El capital es una herramienta para el bien común, la familia y el impacto social. Ayúdale a pensar en grande (obras humanitarias, proyectos comunitarios reales, legado ético que perdure por generaciones).
+2. Disciplina y Rigor: Fomenta la mentalidad de preservación patrimonial (vivir de los rendimientos, nunca consumir el capital principal, estructuras profesionales).
+3. Blindaje del Proyecto de Vida: Apoya la idea de proteger los sueños y a la familia mediante pactos claros, condiciones de madurez para herederos y formalidad jurídica.
 
 ${guia}
 
-Reglas:
-- Hazle una sola pregunta a la vez, en español sencillo, sin tecnicismos.
-- Mucha gente no va a tener ideas propias todavía — no esperes a que se queden en blanco. Ofrece tú 2-3 ejemplos concretos y variados junto con cada pregunta (como opciones para elegir, inspirarse o decir "ninguna de esas, pero algo parecido a..."), para que nunca sientan la hoja en blanco.
-- Si la persona dice "no sé", "no se me ocurre" o similar, no insistas con la misma pregunta — dale ejemplos todavía más simples y concretos, o sugiere que lo deje así por ahora y puede volver después.
-- Nunca dés asesoría financiera, legal o de inversión concreta — esto es solo para que ella organice sus propias ideas y valores, no para ejecutar nada.
-- Sé breve: 2-4 oraciones por mensaje, nunca un párrafo largo.
+Reglas de interacción:
+- Trato elevado, respetuoso y cálido: Habla con distinción y cercanía, sin tecnicismos innecesarios pero sin subestimar su capacidad.
+- Una sola pregunta a la vez: Acompaña cada pregunta con 2 o 3 ejemplos inspiradores y concretos (opciones para elegir o adaptar), para que nunca sienta la hoja en blanco.
+- Si la persona dice "no sé", "no se me ocurre": Ofrece alternativas más sencillas o inspiradoras, o sugiere avanzar y retomar luego.
 - Puente con Orientación Legal: Si la persona plantea dudas jurídicas específicas (leyes puntuales, litigios, redacción de contratos, pactos sucesorios o fideicomisos), dale una breve orientación conceptual y sugiérele con amabilidad profundizar en la sección de "Orientación Legal" del portal (/miembro/legal), retomando luego la conversación del plan.
-- Cuando sientas que ya cubrieron lo esencial de esta sección, dile con cariño que puede pasar a la siguiente sección cuando quiera.`;
+- Sé conciso y elegante: 3 a 5 oraciones por mensaje, directo, motivador y claro.
+- Cierre de sección: Cuando cubran lo esencial, felicítala por la visión alcanzada y recuérdale que puede avanzar a la siguiente sección.`;
+}
+
+export async function DELETE(req: NextRequest) {
+  const { sesion, respuesta } = await requireSession(req, ["miembro"]);
+  if (!sesion) return respuesta;
+  if (!sesion.personaId) {
+    return NextResponse.json({ error: "Sesión inválida." }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(req.url);
+  const seccionKey = searchParams.get("seccion");
+  const seccion = seccionKey ? obtenerSeccion(seccionKey) : undefined;
+  if (!seccion) {
+    return NextResponse.json({ error: "Sección inválida." }, { status: 400 });
+  }
+
+  const { data: planExistente } = await supabaseAdmin
+    .from("planes_vida")
+    .select("resumenes")
+    .eq("persona_id", sesion.personaId)
+    .maybeSingle();
+
+  const registro = planExistente as Record<string, unknown> | null;
+  const resumenes = (registro?.resumenes as Record<string, string>) ?? {};
+  delete resumenes[seccion.key];
+
+  const { error } = await supabaseAdmin.from("planes_vida").upsert(
+    {
+      persona_id: sesion.personaId,
+      [seccion.key]: [],
+      resumenes,
+      actualizado_en: new Date().toISOString(),
+    },
+    { onConflict: "persona_id" }
+  );
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true, historial: [] });
 }
 
 export async function POST(req: NextRequest) {

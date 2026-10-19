@@ -66,9 +66,9 @@ export const SECCIONES_PLAN_VIDA: SeccionPlanVida[] = [
   {
     key: "legado",
     numero: 8,
-    titulo: "Legado y transmisión",
+    titulo: "Legado, gobernanza y equipos ejecutivos",
     guia:
-      "Ayuda a pensar qué se transmite a las siguientes generaciones más allá del dinero: valores, conocimiento, historia familiar. Pregunta sobre un protocolo familiar simple (cómo se toman decisiones, cómo se resuelven conflictos) y si quiere dejar una carta a las futuras generaciones.",
+      "Ayuda a definir la estructura de gobierno y los profesionales y equipos ejecutivos de alto nivel que se deben contratar para ejecutar los proyectos y administrar el patrimonio con solidez empresarial. Pregunta sobre: qué rol jugarán los asesores especializados (coordinador patrimonial o family office, abogados corporativos, fiscalistas internacionales, auditores externos) y profesionales de ejecución (como un Project Manager o directores de proyecto para liderar la materialización de los objetivos). Nada de paternalismo u ONG: aquí se habla de dirección de proyectos, holdings, gobierno patrimonial y transmisión generacional con rigor corporativo.",
   },
 ];
 
