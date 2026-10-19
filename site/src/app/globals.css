@@ -1,0 +1,207 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #F2F6F6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fondo atmosférico compartido por las pantallas del portal (login, miembro, etc.) */
+.rp-bg {
+  background-image: url("/images/login-bg-mobile.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+@media (min-width: 900px) {
+  .rp-bg {
+    background-image: url("/images/login-bg-desktop.png");
+    background-size: cover;
+    background-position: center center;
+  }
+}
+
+/* Niveles de atmósfera (agregado 2026-09-29) — "el paisaje se retira hacia
+   adentro" a medida que el usuario entra más profundo al portal.
+   Nivel 1 "completo" = .rp-bg (login/inicio, no tocar).
+   Nivel 2 "difuminado" = .rp-bg-soft (ej. Mis compras).
+   Nivel 3 "tenue" = .rp-bg-glow (ej. Detalle de compra).
+   Nivel 4 "limpio" = .rp-bg-clean (ej. Perfil, Solicitudes, Admin). */
+
+.rp-bg-soft {
+  position: relative;
+  background: #F2F6F6;
+}
+.rp-bg-soft::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("/images/login-bg-mobile.png");
+  background-size: cover;
+  background-position: center top;
+  filter: blur(46px) saturate(92%);
+  opacity: 0.32;
+  z-index: 0;
+  pointer-events: none;
+}
+@media (min-width: 900px) {
+  .rp-bg-soft::before {
+    background-image: url("/images/login-bg-desktop.png");
+    background-position: center center;
+  }
+}
+
+.rp-bg-glow {
+  position: relative;
+  background: #F2F6F6;
+}
+.rp-bg-glow::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 20%,
+    rgba(220, 216, 242, 0.55) 0%,
+    rgba(242, 246, 246, 0.15) 45%,
+    transparent 75%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+.rp-bg-clean {
+  position: relative;
+  background: #F2F6F6;
+}
+.rp-bg-clean::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(220, 216, 242, 0.28) 0%,
+    rgba(242, 246, 246, 0.06) 40%,
+    transparent 70%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+.rp-bg-soft > *,
+.rp-bg-glow > *,
+.rp-bg-clean > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Título de pantalla con el mismo tratamiento tipográfico de la portada
+   (Georgia serif, peso normal) — reemplaza el <h1> sans-serif bold genérico
+   que tenían las pantallas internas de admin/miembro (agregado 2026-10-08). */
+.rp-titulo {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+}
+
+/* Botón principal con el mismo degradé difuminado del botón "Ingresar" de la
+   portada (blanco → violeta → celeste de agua), en vez del violeta plano que
+   tenían los botones de las pantallas internas (agregado 2026-10-08). */
+.rp-boton {
+  border: none;
+  color: #fff;
+  background: linear-gradient(110deg, rgba(255, 255, 255, 0.9), #7568a8 32%, #6fafc2);
+  box-shadow:
+    0 15px 32px rgba(117, 104, 168, 0.24),
+    0 0 26px rgba(111, 175, 194, 0.13),
+    0 0 20px 2px rgba(255, 247, 220, 0.5);
+}
+
+/* Pulso etéreo continuo y sutil para las tarjetas de compra — un brillo
+   violeta que respira, no un hover. Va en un ::after superpuesto (no en el
+   box-shadow propio de la tarjeta) para no pisar la sombra/el borde que cada
+   tarjeta ya tiene. Escalonado con nth-child para que no todas tilden al
+   mismo tiempo. Respeta prefers-reduced-motion (agregado 2026-10-08). */
+.rp-tarjeta-compra {
+  position: relative;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes rp-pulso-etereo {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  .rp-tarjeta-compra::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: 0 0 20px 2px rgba(117, 104, 168, 0.28);
+    opacity: 0;
+    animation: rp-pulso-etereo 5s ease-in-out infinite;
+  }
+  .rp-tarjeta-compra:nth-child(2n)::after {
+    animation-delay: 1.4s;
+  }
+  .rp-tarjeta-compra:nth-child(3n)::after {
+    animation-delay: 2.7s;
+  }
+}
+
+/* Microinteracciones compartidas del admin (agregado 2026-10-01) —
+   "hover suave, halo sutil al enfocar inputs, entrada progresiva,
+   transiciones suaves. Nada llamativo." */
+@keyframes rp-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-ui {
+  animation: rp-fade-up 0.35s ease both;
+}
+
+.admin-ui button:not(:disabled) {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.admin-ui button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(117, 104, 168, 0.16);
+}
+
+.admin-ui button:not(:disabled):active {
+  transform: translateY(0);
+}
+
+.admin-ui input,
+.admin-ui select,
+.admin-ui textarea {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-ui input:focus,
+.admin-ui select:focus,
+.admin-ui textarea:focus {
+  outline: none;
+  border-color: #7568a8 !important;
+  box-shadow: 0 0 0 3px rgba(117, 104, 168, 0.15);
+}
